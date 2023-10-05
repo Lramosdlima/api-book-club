@@ -3,6 +3,7 @@ class ResponseOn {
         return {
             status: true,
             data,
+            error: null,
             codehttp,
         };
     }
@@ -10,6 +11,7 @@ class ResponseOn {
     error(error, codehttp) {
         return {
             status: false,
+            data: null,
             error,
             codehttp,
         };
