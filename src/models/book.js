@@ -17,7 +17,7 @@ const getById = async (id) => {
 
 const create = async (title, synopsis, genre_id) => {
     const book = await connection.execute(
-        'INSERT INTO books (title,synopsis,genre_id) VALUES (?, ?)',
+        'INSERT INTO books (title,synopsis,genre_id) VALUES (?, ?,?)',
         [title, synopsis,genre_id],
     );
     return book;
