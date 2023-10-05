@@ -15,18 +15,18 @@ const getById = async (id) => {
     return book;
 };
 
-const create = async (name, author_id) => {
+const create = async (title, synopsis) => {
     const book = await connection.execute(
-        'INSERT INTO books (name, author_id) VALUES (?, ?)',
-        [name, author_id],
+        'INSERT INTO books (title,synopsis) VALUES (?, ?)',
+        [title, synopsis],
     );
     return book;
 };
 
-const update = async (id, name, author_id) => {
+const update = async (id, title, synopsis) => {
     const book = await connection.execute(
-        'UPDATE books SET name = ?, author_id = ? WHERE id = ?',
-        [name, author_id, id],
+        'UPDATE books SET title = ?, synopsis = ? WHERE id = ?',
+        [title, synopsis, id],
     );
     return book;
 };
