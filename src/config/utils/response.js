@@ -1,19 +1,19 @@
-
 class ResponseOn {
-    constructor() {
-        this.success = success;
-        this.error = error;
+    static success(data, statusCode) {
+        return {
+            status: true,
+            data,
+            statusCode,
+        };
+    }
+
+    static error(error, statusCode) {
+        return {
+            status: false,
+            error,
+            statusCode,
+        };
     }
 }
 
-const success = (data, codeHttp) => {
-    return { status: true, codeHttp, data };
-};
-
-const error = (error, codeHttp) => {
-    return { status: false, codeHttp, error };
-};
-
-module.exports = {
-    ResponseOn,
-};
+module.exports = ResponseOn;
