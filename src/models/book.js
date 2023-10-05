@@ -15,6 +15,14 @@ const getById = async (id) => {
     return book;
 };
 
+const getByTitle = async (title) => {
+    const book = await connection.execute(
+        'SELECT * FROM books WHERE title = ?',
+        [title],
+    );
+    return book;
+};
+
 const create = async (title, synopsis, genre_id) => {
     const book = await connection.execute(
         'INSERT INTO books (title,synopsis,genre_id) VALUES (?, ?,?)',
@@ -42,6 +50,7 @@ const exclude = async (id) => {
 module.exports = {
     getAll,
     getById,
+    getByTitle,
     create,
     update,
     exclude,
