@@ -1,17 +1,17 @@
 class ResponseOn {
-    static success(data, statusCode) {
+    success(data, codehttp) {
         return {
             status: true,
             data,
-            statusCode,
+            codehttp,
         };
     }
 
-    static error(error, statusCode) {
+    error(error, codehttp) {
         return {
             status: false,
             error,
-            statusCode,
+            codehttp,
         };
     }
 }
