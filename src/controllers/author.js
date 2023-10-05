@@ -13,15 +13,15 @@ class AuthorController {
     }
 
     async create(req, res) {
-        const { title, synopsis, genre_id } = req.body;
-        const author = await authorModel.create(title, synopsis, genre_id);
+        const { name, description } = req.body;
+        const author = await authorModel.create(name, description);
         return res.status(201).json(author);
     }
 
     async update(req, res) {
         const { id } = req.params;
-        const { title, synopsis, genre_id } = req.body;
-        const result = await authorModel.update(id, title, synopsis, genre_id);
+        const { name, description } = req.body;
+        const result = await authorModel.update(id, name, description);
         return res.status(200).json(result);
     }
 
