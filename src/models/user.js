@@ -15,6 +15,14 @@ const getById = async (id) => {
     return user;
 };
 
+const getByEmail = async (email) => {
+    const user = await connection.execute(
+        'SELECT * FROM user WHERE email = ?',
+        [email],
+    );
+    return user;
+};
+
 const create = async (name, email,password,profile_picture) => {
     const user = await connection.execute(
         'INSERT INTO user (name,email,password,profile_picture) VALUES (?,?,?,?)',
@@ -42,6 +50,7 @@ const exclude = async (id) => {
 module.exports = {
     getAll,
     getById,
+    getByEmail,
     create,
     update,
     exclude,
