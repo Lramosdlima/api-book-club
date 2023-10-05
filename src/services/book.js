@@ -7,7 +7,7 @@ const getAll = async () => {
     try {
         const books = await bookModel.getAll();
 
-        if (books.length === 0) {
+        if (books.length === 0 || !books) {
             return response.error('Nenhum livro encontrado', 404);
         }
 

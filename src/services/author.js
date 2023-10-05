@@ -7,7 +7,7 @@ const getAll = async () => {
     try {
         const authors = await authorModel.getAll();
 
-        if (authors.length === 0) {
+        if (authors.length === 0 || !authors) {
             return response.error('Nenhum autor encontrado', 404);
         }
 
