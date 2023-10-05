@@ -12,7 +12,7 @@ const router = Router();
 router.use('/book', BookRouter);
 router.use('/author', AuthorRouter);
 router.use('/community', CommunityRouter);
-router.use('/community_chat', CommunityChatRouter);
+router.use('/communityChat', CommunityChatRouter);
 router.use('/user', UserRouter);
 router.use('/genre', GenreRouter);
 
