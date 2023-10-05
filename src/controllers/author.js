@@ -1,37 +1,37 @@
-const bookService = require('../services/book');
+const authorService = require('../services/author');
 
-class BookController {
+class AuthorController {
     async getAll(req, res) {
-        const { codehttp, ...rest } = await bookService.getAll();
+        const { codehttp, ...rest } = await authorService.getAll();
         return res.status(codehttp).json(rest);
     }
 
     async getById(req, res) {
         const { id } = req.params;
-        const { codehttp, ...rest } = await bookService.getById(id);
+        const { codehttp, ...rest } = await authorService.getById(id);
         return res.status(codehttp).json(rest);
     }
 
     async create(req, res) {
         const { name, description } = req.body;
-        const { codehttp, ...rest } = await bookService.create(name, description);
+        const { codehttp, ...rest } = await authorService.create(name, description);
         return res.status(codehttp).json(rest);
     }
 
     async update(req, res) {
         const { id } = req.params;
         const { name, description } = req.body;
-        const { codehttp, ...rest } = await bookService.update(id, name, description);
+        const { codehttp, ...rest } = await authorService.update(id, name, description);
         return res.status(codehttp).json(rest);
     }
 
     async exclude(req, res) {
         const { id } = req.params;
-        const { codehttp, ...rest } = await bookService.exclude(id);
+        const { codehttp, ...rest } = await authorService.exclude(id);
         return res.status(codehttp).json(rest);
     }
 }
 
 module.exports = {
-    BookController,
+    AuthorController,
 };
