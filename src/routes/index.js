@@ -1,6 +1,8 @@
 const { Router } = require('express');
 const BookRouter = require('./book');
 const AuthorRouter = require('./author');
+const CommunityRouter = require('./community');
+const UserRouter = require('./user');
 
 const router = Router();
 
