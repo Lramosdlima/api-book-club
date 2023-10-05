@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { CommunityChatController } = require('../controllers/community_chat');
+const { CommunityChatController } = require('../controllers/communityChat');
 
 const router = Router();
 

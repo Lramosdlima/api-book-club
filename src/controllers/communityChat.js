@@ -1,4 +1,4 @@
-const communityChatService = require('../services/community_chat');
+const communityChatService = require('../services/communityChat');
 
 class CommunityChatController {
     async getAll(req, res) {
