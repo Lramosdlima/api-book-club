@@ -2,7 +2,7 @@ const { Router } = require('express');
 const BookRouter = require('./book');
 const AuthorRouter = require('./author');
 const CommunityRouter = require('./community');
-const CommunityChatRouter = require('./community_chat');
+const CommunityChatRouter = require('./communityChat');
 const UserRouter = require('./user');
 const GenreRouter = require('./genre');
 
