@@ -1,4 +1,4 @@
-const connection = require('/connection');
+const connection = require('../config/connection');
 
 const getAll = async () => {
     const community_chats = await connection.execute(
