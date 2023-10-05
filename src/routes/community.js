@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const { CommunityController } = require('../controllers/author');
+const { CommunityController } = require('../controllers/community');
 
 const router = Router();
 
