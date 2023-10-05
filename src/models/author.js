@@ -15,6 +15,14 @@ const getById = async (id) => {
     return author;
 };
 
+const getByName = async (name) => {
+    const author = await connection.execute(
+        'SELECT * FROM author WHERE name = ?',
+        [name],
+    );
+    return author;
+};
+
 const create = async (name, description) => {
     const author = await connection.execute(
         'INSERT INTO author (name,description) VALUES (?, ?)',
@@ -42,6 +50,7 @@ const exclude = async (id) => {
 module.exports = {
     getAll,
     getById,
+    getByName,
     create,
     update,
     exclude,

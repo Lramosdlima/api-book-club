@@ -1,33 +1,33 @@
-const authorModel = require('../models/author');
+const authorService = require('../service/author');
 
 class AuthorController {
     async getAll(req, res) {
-        const authors = await authorModel.getAll();
+        const authors = await authorService.getAllAuthors;
         return res.status(200).json(authors);
     }
 
     async getById(req, res) {
         const { id } = req.params;
-        const author = await authorModel.getById(id);
+        const author = await authorService.getById(id);
         return res.status(200).json(author);
     }
 
     async create(req, res) {
         const { name, description } = req.body;
-        const author = await authorModel.create(name, description);
+        const author = await authorService.create(name, description);
         return res.status(201).json(author);
     }
 
     async update(req, res) {
         const { id } = req.params;
         const { name, description } = req.body;
-        const result = await authorModel.update(id, name, description);
+        const result = await authorService.update(id, name, description);
         return res.status(200).json(result);
     }
 
     async exclude(req, res) {
         const { id } = req.params;
-        const result = await authorModel.exclude(id);
+        const result = await authorService.exclude(id);
         return res.status(200).json(result);
     }
 }
