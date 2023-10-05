@@ -9,6 +9,7 @@ class ResponseOn {
     }
 
     error(error, codehttp) {
+        console.log(error);
         return {
             status: false,
             data: null,
