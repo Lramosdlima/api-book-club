@@ -12,6 +12,14 @@ const getById = async (id) => {
         'SELECT * FROM genre WHERE id = ?',
         [id],
     );
+    return genre[0];
+};
+
+const getByName = async (name) => {
+    const genre = await connection.execute(
+        'SELECT * FROM genre WHERE name = ?',
+        [name],
+    );
     return genre;
 };
 
@@ -42,6 +50,7 @@ const exclude = async (id) => {
 module.exports = {
     getAll,
     getById,
+    getByName,
     create,
     update,
     exclude,
