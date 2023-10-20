@@ -36,19 +36,19 @@ const getById = async (id) => {
     }
 };
 
-const create = async (name, description) => {
+const create = async (title, synopsis, genre_id) => {
     try {
-        if (!name || !description) {
-            return response.error('O nome e a descrição são obrigatórios', 400);
+        if (!title || !synopsis || !genre_id) {
+            return response.error('O nome, descrição e o id do gênero são obrigatórios', 400);
         }
 
-        const checkBookExist = await bookModel.getByName(name);
+        const checkBookExist = await bookModel.getByTitle(title);
 
         if (!checkBookExist) {
             return response.error('O livro já existe', 400);
         }
 
-        await bookModel.create(name, description);
+        await bookModel.create(title, synopsis, genre_id);
 
         return response.success('Livro foi criado com sucesso', 201);
     } catch (error) {
@@ -56,9 +56,9 @@ const create = async (name, description) => {
     }
 };
 
-const update = async (id, name, description) => {
+const update = async (id, title, synopsis) => {
     try {
-        if (!id || !name || !description) {
+        if (!id || !title || !synopsis) {
             return response.error('O id, o nome e a descrição são obrigatórios', 400);
         }
 
@@ -68,7 +68,7 @@ const update = async (id, name, description) => {
             return response.error(`Livro de id ${id} não encontrado`, 404);
         }
         
-        await bookModel.update(id, name, description);
+        await bookModel.update(id, title, synopsis);
 
         return response.success('Livro foi atualizado com sucesso', 200);
     } catch (error) {
