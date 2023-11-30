@@ -34,6 +34,7 @@ const getAllWithCompleteInfo = async () => {
 
         const finalResponse = books.map((book) => {
             return {
+                id: book.id,
                 title: book.title,
                 synopsis: book.synopsis,
                 genre: book.genre,
