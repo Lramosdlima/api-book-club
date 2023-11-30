@@ -1,6 +1,6 @@
 const roleService = require('../services/role');
 
-class roleController {
+class RoleController {
     async getAll(req, res) {
         const { codehttp, ...rest } = await roleService.getAll();
         return res.status(codehttp).json(rest);
@@ -33,5 +33,5 @@ class roleController {
 }
 
 module.exports = {
-    roleController,
+    RoleController,
 };
