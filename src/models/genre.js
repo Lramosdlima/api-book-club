@@ -4,7 +4,7 @@ const getAll = async () => {
     const genres = await connection.execute(
         'SELECT * FROM genre',
     );
-    return genres;
+    return genres[0];
 };
 
 const getById = async (id) => {
@@ -12,15 +12,15 @@ const getById = async (id) => {
         'SELECT * FROM genre WHERE id = ?',
         [id],
     );
-    return genre;
+    return genre[0];
 };
 
 const create = async (name, description) => {
     const genre = await connection.execute(
-        'INSERT INTO genre (name,description) VALUES (?, ?)',
+        'INSERT INTO genre (name, description) VALUES (?, ?)',
         [name, description],
     );
-    return genre;
+    return genre[0];
 };
 
 const update = async (id, name, description) => {
@@ -28,7 +28,7 @@ const update = async (id, name, description) => {
         'UPDATE genre SET name = ?, description = ? WHERE id = ?',
         [name, description, id],
     );
-    return genre;
+    return genre[0];
 };
 
 const exclude = async (id) => {
@@ -36,7 +36,7 @@ const exclude = async (id) => {
         'DELETE FROM genre WHERE id = ?',
         [id],
     );
-    return genre;
+    return genre[0];
 };
 
 module.exports = {

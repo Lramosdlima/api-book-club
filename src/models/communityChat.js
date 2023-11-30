@@ -4,7 +4,7 @@ const getAll = async () => {
     const communityChats = await connection.execute(
         'SELECT * FROM community_chat',
     );
-    return communityChats;
+    return communityChats[0];
 };
 
 const getById = async (id) => {
@@ -12,15 +12,15 @@ const getById = async (id) => {
         'SELECT * FROM community_chat WHERE id = ?',
         [id],
     );
-    return communityChat;
+    return communityChat[0];
 };
 
 const create = async (community_user_id, message) => {
     const communityChat = await connection.execute(
-        'INSERT INTO community_chat (community_user_id,message) VALUES (?, ?)',
+        'INSERT INTO community_chat (community_user_id, message) VALUES (?, ?)',
         [community_user_id, message],
     );
-    return communityChat;
+    return communityChat[0];
 };
 
 const update = async (id, community_user_id, message) => {
@@ -28,7 +28,7 @@ const update = async (id, community_user_id, message) => {
         'UPDATE community_chat SET community_user_id = ?, message = ? WHERE id = ?',
         [community_user_id, message, id],
     );
-    return communityChat;
+    return communityChat[0];
 };
 
 const exclude = async (id) => {
@@ -36,7 +36,7 @@ const exclude = async (id) => {
         'DELETE FROM community_chat WHERE id = ?',
         [id],
     );
-    return communityChat;
+    return communityChat[0];
 };
 
 module.exports = {

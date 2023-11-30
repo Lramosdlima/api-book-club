@@ -2,49 +2,49 @@ const connection = require('../config/connection');
 
 const getAll = async () => {
     const books = await connection.execute(
-        'SELECT * FROM books',
+        'SELECT * FROM book',
     );
-    return books;
+    return books[0];
 };
 
 const getById = async (id) => {
     const book = await connection.execute(
-        'SELECT * FROM books WHERE id = ?',
+        'SELECT * FROM book WHERE id = ?',
         [id],
     );
-    return book;
+    return book[0];
 };
 
 const getByTitle = async (title) => {
     const book = await connection.execute(
-        'SELECT * FROM books WHERE title = ?',
+        'SELECT * FROM book WHERE title LIKE \'%?%\'',
         [title],
     );
-    return book;
+    return book[0];
 };
 
 const create = async (title, synopsis, genre_id) => {
     const book = await connection.execute(
-        'INSERT INTO books (title,synopsis,genre_id) VALUES (?, ?,?)',
+        'INSERT INTO book (title, synopsis, genre_id) VALUES (?, ?, ?)',
         [title, synopsis,genre_id],
     );
-    return book;
+    return book[0];
 };
 
 const update = async (id, title, synopsis,genre_id) => {
     const book = await connection.execute(
-        'UPDATE books SET title = ?, synopsis = ?,genre_id = ? WHERE id = ?',
+        'UPDATE book SET title = ?, synopsis = ?, genre_id = ? WHERE id = ?',
         [title, synopsis, id,genre_id],
     );
-    return book;
+    return book[0];
 };
 
 const exclude = async (id) => {
     const book = await connection.execute(
-        'DELETE FROM books WHERE id = ?',
+        'DELETE FROM book WHERE id = ?',
         [id],
     );
-    return book;
+    return book[0];
 };
 
 module.exports = {

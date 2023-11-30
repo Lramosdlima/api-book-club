@@ -4,7 +4,7 @@ const getAll = async () => {
     const users = await connection.execute(
         'SELECT * FROM user',
     );
-    return users;
+    return users[0];
 };
 
 const getById = async (id) => {
@@ -12,7 +12,7 @@ const getById = async (id) => {
         'SELECT * FROM user WHERE id = ?',
         [id],
     );
-    return user;
+    return user[0];
 };
 
 const getByEmail = async (email) => {
@@ -20,20 +20,20 @@ const getByEmail = async (email) => {
         'SELECT * FROM user WHERE email = ?',
         [email],
     );
-    return user;
+    return user[0];
 };
 
-const create = async (name, email,password,profile_picture) => {
+const create = async (name, email, password, profile_picture) => {
     const user = await connection.execute(
-        'INSERT INTO user (name,email,password,profile_picture) VALUES (?,?,?,?)',
+        'INSERT INTO user (name, email, password, profile_picture) VALUES (?, ?, ?, ?)',
         [name, email,password,profile_picture],
     );
     return user;
 };
 
-const update = async (id, name, email,password,profile_picture) => {
+const update = async (id, name, email, password, profile_picture) => {
     const user = await connection.execute(
-        'UPDATE user SET name = ?, email = ? , password = ?, profile_picture = ?, WHERE id = ?',
+        'UPDATE user SET name = ?, email = ?, password = ?, profile_picture = ?, WHERE id = ?',
         [name, email, id,password,profile_picture],
     );
     return user;
