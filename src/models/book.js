@@ -26,7 +26,7 @@ const getByTitle = async (title) => {
 const create = async (title, synopsis, genre_id) => {
     const book = await connection.execute(
         'INSERT INTO book (title, synopsis, genre_id) VALUES (?, ?, ?)',
-        [title, synopsis,genre_id],
+        [title || null, synopsis || null, genre_id || null],
     );
     return book[0];
 };
