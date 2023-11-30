@@ -6,6 +6,11 @@ class BookController {
         return res.status(codehttp).json(rest);
     }
 
+    async getAllWithCompleteInfo(req, res) {
+        const { codehttp, ...rest } = await bookService.getAllWithCompleteInfo();
+        return res.status(codehttp).json(rest);
+    }
+
     async getById(req, res) {
         const { id } = req.params;
         const { codehttp, ...rest } = await bookService.getById(id);

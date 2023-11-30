@@ -1,4 +1,5 @@
 const bookModel = require('../models/book');
+const genreModel = require('../models/genre');
 const ResponseOn = require('../config/utils/response');
 
 const response = new ResponseOn();
@@ -12,6 +13,35 @@ const getAll = async () => {
         }
 
         return response.success(books, 200);
+
+    } catch (error) {
+        return response.error(error, 500);
+    }
+};
+
+const getAllWithCompleteInfo = async () => {
+    try {
+        const books = await bookModel.getAll();
+
+        if (books.length === 0 || !books) {
+            return response.error('Nenhum livro encontrado', 404);
+        }
+
+        for (let i = 0; i < books.length; i++) {
+            const genre = await genreModel.getById(books[i].genre_id);
+            books[i].genre = genre[0].name;
+        }
+
+        const finalResponse = books.map((book) => {
+            return {
+                title: book.title,
+                synopsis: book.synopsis,
+                genre: book.genre,
+                imageUrl: book.urlImage,
+            };
+        });
+
+        return response.success(finalResponse, 200);
 
     } catch (error) {
         return response.error(error, 500);
@@ -98,6 +128,7 @@ const exclude = async (id) => {
 
 module.exports = {
     getAll,
+    getAllWithCompleteInfo,
     getById,
     create,
     update,
