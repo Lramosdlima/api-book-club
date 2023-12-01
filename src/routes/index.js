@@ -6,9 +6,11 @@ const CommunityChatRouter = require('./communityChat');
 const FavoriteBookRouter = require('./favoriteBook');
 const UserRouter = require('./user');
 const GenreRouter = require('./genre');
+const AuthRouter = require('./auth');
 
 const router = Router();
 
+router.use('/auth', AuthRouter);
 router.use('/book', BookRouter);
 router.use('/favorite', FavoriteBookRouter);
 router.use('/author', AuthorRouter);

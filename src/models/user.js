@@ -17,16 +17,16 @@ const getById = async (id) => {
 
 const getByEmail = async (email) => {
     const user = await connection.execute(
-        'SELECT * FROM user WHERE email = ?',
+        'SELECT * FROM user WHERE email = ? LIMIT 1',
         [email],
     );
     return user[0];
 };
 
-const create = async (name, email, password, profile_picture) => {
+const create = async (name, email, password) => {
     const user = await connection.execute(
-        'INSERT INTO user (name, email, password, profile_picture) VALUES (?, ?, ?, ?)',
-        [name, email,password,profile_picture],
+        'INSERT INTO user (name, email, password) VALUES (?, ?, ?)',
+        [name, email, password],
     );
     return user;
 };
