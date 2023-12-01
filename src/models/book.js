@@ -23,18 +23,18 @@ const getByTitle = async (title) => {
     return book[0];
 };
 
-const create = async (title, synopsis, genre_id) => {
+const create = async (title, synopsis, urlImage, genre_id) => {
     const book = await connection.execute(
-        'INSERT INTO book (title, synopsis, genre_id) VALUES (?, ?, ?)',
-        [title || null, synopsis || null, genre_id || null],
+        'INSERT INTO book (title, synopsis, urlImage, genre_id) VALUES (?, ?, ?, ?)',
+        [title || null, synopsis || null, urlImage || null, genre_id || null],
     );
     return book[0];
 };
 
-const update = async (id, title, synopsis,genre_id) => {
+const update = async (id, title, synopsis, urlImage, genre_id) => {
     const book = await connection.execute(
-        'UPDATE book SET title = ?, synopsis = ?, genre_id = ? WHERE id = ?',
-        [title, synopsis, id,genre_id],
+        'UPDATE book SET title = ?, synopsis = ?, urlImage = ?, genre_id = ? WHERE id = ?',
+        [title, synopsis, urlImage, genre_id, id],
     );
     return book[0];
 };

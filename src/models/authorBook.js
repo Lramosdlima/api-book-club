@@ -15,18 +15,26 @@ const getById = async (id) => {
     return authorBook[0];
 };
 
-const create = async (name, description) => {
+const getByBookId = async (book_id) => {
     const authorBook = await connection.execute(
-        'INSERT INTO author_book (name, description) VALUES (?, ?)',
-        [name, description],
+        'SELECT * FROM author_book WHERE book_id = ?',
+        [book_id],
     );
     return authorBook[0];
 };
 
-const update = async (id, name, description) => {
+const create = async (author_id, book_id) => {
     const authorBook = await connection.execute(
-        'UPDATE author_book SET name = ?, description = ? WHERE id = ?',
-        [name, description, id],
+        'INSERT INTO author_book (author_id, book_id) VALUES (?, ?)',
+        [author_id || null, book_id || null],
+    );
+    return authorBook[0];
+};
+
+const update = async (id, author_id, book_id) => {
+    const authorBook = await connection.execute(
+        'UPDATE author_book SET author_id = ?, book_id = ? WHERE id = ?',
+        [author_id, book_id, id],
     );
     return authorBook[0];
 };
@@ -42,6 +50,7 @@ const exclude = async (id) => {
 module.exports = {
     getAll,
     getById,
+    getByBookId,
     create,
     update,
     exclude,
