@@ -1,4 +1,4 @@
-const bookQuizService = require('../services/book_quiz');
+const bookQuizService = require('../services/bookQuiz');
 
 class BookQuizController {
     async getAll(req, res) {
