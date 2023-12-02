@@ -13,15 +13,17 @@ class CommunityUserController {
     }
 
     async create(req, res) {
-        const { community_id, user_id } = req.body;
-        const { codehttp, ...rest } = await communityUserService.create(community_id, user_id);
+        const { userId } = req;
+        const { community_id } = req.body;
+        const { codehttp, ...rest } = await communityUserService.create(community_id, userId);
         return res.status(codehttp).json(rest);
     }
 
     async update(req, res) {
         const { id } = req.params;
-        const { community_id, user_id } = req.body;
-        const { codehttp, ...rest } = await communityUserService.update(id, community_id, user_id);
+        const { userId } = req;
+        const { community_id } = req.body;
+        const { codehttp, ...rest } = await communityUserService.update(id, community_id, userId);
         return res.status(codehttp).json(rest);
     }
 

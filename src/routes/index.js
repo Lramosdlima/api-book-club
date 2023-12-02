@@ -7,16 +7,19 @@ const FavoriteBookRouter = require('./favoriteBook');
 const UserRouter = require('./user');
 const GenreRouter = require('./genre');
 const AuthRouter = require('./auth');
+const { Middleware } = require('./middleware');
 
 const router = Router();
 
+const middleware = new Middleware();
+
 router.use('/auth', AuthRouter);
-router.use('/book', BookRouter);
-router.use('/favorite', FavoriteBookRouter);
-router.use('/author', AuthorRouter);
-router.use('/community', CommunityRouter);
-router.use('/communityChat', CommunityChatRouter);
-router.use('/user', UserRouter);
-router.use('/genre', GenreRouter);
+router.use('/book', middleware.auth, BookRouter);
+router.use('/favorite', middleware.auth, FavoriteBookRouter);
+router.use('/author', middleware.auth, AuthorRouter);
+router.use('/community', middleware.auth, CommunityRouter);
+router.use('/communityChat', middleware.auth, CommunityChatRouter);
+router.use('/user', middleware.auth, UserRouter);
+router.use('/genre', middleware.auth, GenreRouter);
 
 module.exports = router;

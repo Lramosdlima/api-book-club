@@ -12,6 +12,18 @@ class AuthController {
         const { codehttp, ...rest } = await authService.register(name, email, password);
         return res.status(codehttp).json(rest);
     }
+
+    async forgotPassword(req, res) {
+        const { email } = req.body;
+        const { codehttp, ...rest } = await authService.forgotPassword(email);
+        return res.status(codehttp).json(rest);
+    }
+
+    async resetPassword(req, res) {
+        const { token, password } = req.body;
+        const { codehttp, ...rest } = await authService.resetPassword(token, password);
+        return res.status(codehttp).json(rest);
+    }
 }
 
 module.exports = {
