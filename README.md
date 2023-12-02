@@ -12,7 +12,7 @@
 
 # Sobre
 
-Essa API é um projeto de graduação de Análise e Desenvolvimento de Sistemas para o Projeto Integrador. Ela foi desenvolvida com o intuito de praticar conhecimentos adquiridos no decorrer do curso. Essa API fornece  das funções para o [Appp Book Club](https://github.com/Lramosdlima/app-book-club).
+Essa API é um projeto de graduação de Análise e Desenvolvimento de Sistemas para o Projeto Integrador. Ela foi desenvolvida com o intuito de praticar conhecimentos adquiridos no decorrer do curso. Essa API fornece  das funções para o [App Book Club](https://github.com/Lramosdlima/app-book-club).
 
 ## 🛠 Conhecimentos Aplicados
 
