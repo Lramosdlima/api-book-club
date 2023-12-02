@@ -7,14 +7,14 @@
 </h3>
 
 <p align="center">
-  "Feito por Leonardo R., Felipe e Rafael."
+  Feito por Leonardo R., Felipe R. e Rafael C.
 </p>
 
 # Sobre
 
 Essa API é um projeto de graduação de Análise e Desenvolvimento de Sistemas para o Projeto Integrador. Ela foi desenvolvida com o intuito de praticar conhecimentos adquiridos no decorrer do curso.
 
-# 🛠 Conhecimentos Aplicados
+## 🛠 Conhecimentos Aplicados
 
 - NODE JS + Express
 - API REST
