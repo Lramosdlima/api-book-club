@@ -21,6 +21,35 @@ const getAll = async () => {
     }
 };
 
+const getBookInfo = async (books) => {
+    for (let i = 0; i < books.length; i++) {
+        const genre = await genreModel.getById(books[i].genre_id);
+        books[i].genre = genre[0].name;
+    }
+
+    for (let i = 0; i < books.length; i++) {
+        const authorBook = await authorBookModel.getByBookId(books[i].id);
+        const authors = [];
+        for (let j = 0; j < authorBook.length; j++) {
+            const author = await authorModel.getById(authorBook[j].author_id);
+            authors.push(author[0].name);
+        }
+        books[i].authors = authors;
+    }
+
+    return books.map((book) => {
+        return {
+            id: book.id,
+            title: book.title,
+            synopsis: book.synopsis,
+            genre: book.genre,
+            imageUrl: book.urlImage,
+            authors: book.authors,
+        };
+    });
+};
+
+
 const getAllWithCompleteInfo = async () => {
     try {
         const books = await bookModel.getAll();
@@ -29,33 +58,9 @@ const getAllWithCompleteInfo = async () => {
             return response.error('Nenhum livro encontrado', 404);
         }
 
-        for (let i = 0; i < books.length; i++) {
-            const genre = await genreModel.getById(books[i].genre_id);
-            books[i].genre = genre[0].name;
-        }
+        const filterBooks = await getBookInfo(books);
 
-        for (let i = 0; i < books.length; i++) {
-            const authorBook = await authorBookModel.getByBookId(books[i].id);
-            const authors = [];
-            for (let j = 0; j < authorBook.length; j++) {
-                const author = await authorModel.getById(authorBook[j].author_id);
-                authors.push(author[0].name);
-            }
-            books[i].authors = authors;
-        }
-
-        const finalResponse = books.map((book) => {
-            return {
-                id: book.id,
-                title: book.title,
-                synopsis: book.synopsis,
-                genre: book.genre,
-                imageUrl: book.urlImage,
-                authors: book.authors,
-            };
-        });
-
-        return response.success(finalResponse, 200);
+        return response.success(filterBooks, 200);
 
     } catch (error) {
         return response.error(error, 500);
@@ -200,6 +205,7 @@ module.exports = {
     getAllWithCompleteInfo,
     getById,
     getByTitle,
+    getBookInfo,
     create,
     update,
     exclude,

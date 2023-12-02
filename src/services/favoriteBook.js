@@ -1,5 +1,6 @@
 const favoritedBookModel = require('../models/favoriteBook');
 const bookModel = require('../models/book');
+const bookService = require('../services/book');
 const ResponseOn = require('../config/utils/response');
 
 const response = new ResponseOn();
@@ -23,9 +24,11 @@ const getAllByUser = async (user_id) => {
             books.push({ favorite_id: favoritedBook[i].id, book } );
         }
 
+        const booksFinal = await bookService.getBookInfo(books);
+
         const responseFinal = {
             user_id,
-            books,
+            books: booksFinal,
         };
 
         return response.success(responseFinal, 200);
