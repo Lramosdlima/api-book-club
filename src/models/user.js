@@ -28,15 +28,23 @@ const create = async (name, email, password) => {
         'INSERT INTO user (name, email, password) VALUES (?, ?, ?)',
         [name, email, password],
     );
-    return user;
+    return user[0];
 };
 
-const update = async (id, name, email, password, profile_picture) => {
+const update = async (id, name, email) => {
     const user = await connection.execute(
-        'UPDATE user SET name = ?, email = ?, password = ?, profile_picture = ?, WHERE id = ?',
-        [name, email, id,password,profile_picture],
+        'UPDATE user SET name = ?, email = ? WHERE id = ?',
+        [name, email, id],
     );
-    return user;
+    return user[0];
+};
+
+const updatePassword = async (id, password) => {
+    const user = await connection.execute(
+        'UPDATE user SET password = ? WHERE id = ?',
+        [password, id],
+    );
+    return user[0];
 };
 
 const exclude = async (id) => {
@@ -44,7 +52,7 @@ const exclude = async (id) => {
         'DELETE FROM user WHERE id = ?',
         [id],
     );
-    return user;
+    return user[0];
 };
 
 module.exports = {
@@ -53,5 +61,6 @@ module.exports = {
     getByEmail,
     create,
     update,
+    updatePassword,
     exclude,
 };

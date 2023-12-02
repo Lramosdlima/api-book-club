@@ -56,10 +56,10 @@ const create = async (name, email, password) => {
     }
 };
 
-const update = async (id, name, description) => {
+const update = async (id, name, email) => {
     try {
-        if (!id || !name || !description) {
-            return response.error('O id, o nome e a descrição são obrigatórios', 400);
+        if (!id) {
+            return response.error('O id do usuário é obrigatório', 400);
         }
 
         const checkUserExist = await userModel.getById(id);
@@ -68,7 +68,7 @@ const update = async (id, name, description) => {
             return response.error(`Usuário de id ${id} não encontrado`, 404);
         }
         
-        await userModel.update(id, name, description);
+        await userModel.update(id, name, email);
 
         return response.success('Usuário foi atualizado com sucesso', 200);
     } catch (error) {
