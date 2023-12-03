@@ -34,8 +34,11 @@ const login = async (email, password) => {
         );
 
         const responseFinal = {
-            user_id: user[0].id,
-            name: user[0].name,
+            user: {
+                id: user[0].id,
+                name: user[0].name,
+                email: user[0].email,
+            },
             accessToken,
         };
 
