@@ -9,5 +9,5 @@ export const dbConfig = new DataSource({
     database: process.env.POSTGRES_DB || 'postgres',
     synchronize: false,
     logging: true,
-    entities: [process.env.NODE_ENV === 'local' ? './src/entity/*.ts' : './dist/src/entity/*.js'],
+    entities: [process.env.TYPEORM_ENTITIES],
 });
