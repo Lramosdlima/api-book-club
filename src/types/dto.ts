@@ -17,22 +17,26 @@ export type CreateBookDTO = {
     title: string;
     synopsis: string;
     url_image: string;
+    genre_id: number;
+    author_id: number;
 }
 
 export type UpdateBookDTO = {
     title: string;
     synopsis: string;
     url_image: string;
+    genre_id: number;
+    author_id: number;
 }
 
 export type CreateAuthorDTO = {
     name: string;
-    description: string;
+    description?: string;
 }
 
 export type UpdateAuthorDTO = {
     name: string;
-    description: string;
+    description?: string;
 }
 
 export type CreateGenreDTO = {
