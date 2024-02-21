@@ -1,6 +1,8 @@
-const genreService = require('../services/genre');
+import { GenreService } from '../services/genre';
 
-class GenreController {
+const genreService = new GenreService();
+
+export class GenreController {
     async getAll(req, res) {
         const { codehttp, ...rest } = await genreService.getAll();
         return res.status(codehttp).json(rest);
@@ -13,15 +15,15 @@ class GenreController {
     }
 
     async create(req, res) {
-        const { name, description } = req.body;
-        const { codehttp, ...rest } = await genreService.create(name, description);
+        const { name } = req.body;
+        const { codehttp, ...rest } = await genreService.create(name);
         return res.status(codehttp).json(rest);
     }
 
     async update(req, res) {
         const { id } = req.params;
-        const { name, description } = req.body;
-        const { codehttp, ...rest } = await genreService.update(id, name, description);
+        const { name } = req.body;
+        const { codehttp, ...rest } = await genreService.update(id, name);
         return res.status(codehttp).json(rest);
     }
 
@@ -31,7 +33,3 @@ class GenreController {
         return res.status(codehttp).json(rest);
     }
 }
-
-module.exports = {
-    GenreController,
-};

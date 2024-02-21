@@ -1,6 +1,8 @@
-const authService = require('../services/auth');
+import { AuthService } from '../services/auth';
 
-class AuthController {
+const authService = new AuthService();
+
+export class AuthController {
     async login(req, res) {
         const { email, password } = req.body;
         const { codehttp, ...rest } = await authService.login(email, password);
@@ -25,7 +27,3 @@ class AuthController {
         return res.status(codehttp).json(rest);
     }
 }
-
-module.exports = {
-    AuthController,
-};

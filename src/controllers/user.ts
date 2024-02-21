@@ -1,6 +1,8 @@
-const userService = require('../services/user');
+import { UserService } from '../services/user';
 
-class UserController {
+const userService = new UserService();
+
+export class UserController {
     async getAll(req, res) {
         const { codehttp, ...rest } = await userService.getAll();
         return res.status(codehttp).json(rest);
@@ -12,16 +14,10 @@ class UserController {
         return res.status(codehttp).json(rest);
     }
 
-    async create(req, res) {
-        const { name, email, password, profile_picture } = req.body;
-        const { codehttp, ...rest } = await userService.create(name, email, password, profile_picture);
-        return res.status(codehttp).json(rest);
-    }
-
     async update(req, res) {
         const { id } = req.params;
-        const { name, email, password, profile_picture } = req.body;
-        const { codehttp, ...rest } = await userService.update(id, name, email, password, profile_picture);
+        const { name, email } = req.body;
+        const { codehttp, ...rest } = await userService.update(id, name, email);
         return res.status(codehttp).json(rest);
     }
 
@@ -31,7 +27,3 @@ class UserController {
         return res.status(codehttp).json(rest);
     }
 }
-
-module.exports = {
-    UserController,
-};

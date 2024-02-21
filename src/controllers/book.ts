@@ -1,6 +1,8 @@
-const bookService = require('../services/book');
+import { BookService } from '../services/book';
 
-class BookController {
+const bookService = new BookService();
+
+export class BookController {
     async getAll(req, res) {
         const { codehttp, ...rest } = await bookService.getAll();
         return res.status(codehttp).json(rest);
@@ -13,15 +15,15 @@ class BookController {
     }
 
     async create(req, res) {
-        const { title, synopsis, urlImage, genre_id } = req.body;
-        const { codehttp, ...rest } = await bookService.create(title, synopsis, urlImage, genre_id);
+        const { title, synopsis, urlImage, genre_id, author_id } = req.body;
+        const { codehttp, ...rest } = await bookService.create(title, synopsis, urlImage, genre_id, author_id);
         return res.status(codehttp).json(rest);
     }
 
     async update(req, res) {
         const { id } = req.params;
-        const { title, synopsis, urlImage, genre_id } = req.body;
-        const { codehttp, ...rest } = await bookService.update(id, title, synopsis, urlImage, genre_id);
+        const { title, synopsis, urlImage, genre_id, author_id } = req.body;
+        const { codehttp, ...rest } = await bookService.update(id, title, synopsis, urlImage, genre_id, author_id);
         return res.status(codehttp).json(rest);
     }
 
@@ -49,7 +51,3 @@ class BookController {
     }
 
 }
-
-module.exports = {
-    BookController,
-};

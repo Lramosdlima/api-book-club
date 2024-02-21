@@ -1,6 +1,8 @@
-const authorService = require('../services/author');
+import { AuthorService } from '../services/author';
 
-class AuthorController {
+const authorService = new AuthorService();
+
+export class AuthorController {
     async getAll(req, res) {
         const { codehttp, ...rest } = await authorService.getAll();
         return res.status(codehttp).json(rest);
@@ -31,7 +33,3 @@ class AuthorController {
         return res.status(codehttp).json(rest);
     }
 }
-
-module.exports = {
-    AuthorController,
-};

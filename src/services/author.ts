@@ -5,7 +5,7 @@ import { AuthorRepository } from '../repositories/author';
 const response = new ResponseOn();
 const authorRepository = new AuthorRepository();
 
-export class AuthService {
+export class AuthorService {
     getAll = async (): Promise<APIResponse<AuthorEntity[] | string, ErrorTypes>> => {
         try {
             const authors = await authorRepository.getAll();
