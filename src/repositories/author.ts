@@ -1,5 +1,6 @@
 import { dbConfig } from '../config/database/connection';
 import { AuthorEntity } from '../entities/author';
+import { CreateAuthorDTO, UpdateAuthorDTO } from '../types/dto';
 
 const authorRepository = dbConfig.getRepository(AuthorEntity);
 
@@ -22,12 +23,12 @@ export class AuthorRepository {
         return await authorRepository.findOneBy({ name });
     };
 
-    create = async (name: string, description: string): Promise<void> => {
-        await authorRepository.insert({ name, description });
+    create = async (createAuthorDTO: CreateAuthorDTO): Promise<void> => {
+        await authorRepository.insert(createAuthorDTO);
     };
 
-    update = async (id: number, name: string, description: string): Promise<void> => {
-        await authorRepository.update(id, { name, description });
+    update = async (id: number, updateAuthorDTO: UpdateAuthorDTO): Promise<void> => {
+        await authorRepository.update(id, updateAuthorDTO);
     };
 
     exclude = async (id: number): Promise<void> => {
