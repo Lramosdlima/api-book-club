@@ -1,6 +1,12 @@
-const express = require('express');
-const router = require('./routes');
-require('dotenv').config();
+import './config/database';
+import 'reflect-metadata';
+
+import dotenv from 'dotenv';
+import express from 'express';
+
+import router from './routes';
+
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 8000;

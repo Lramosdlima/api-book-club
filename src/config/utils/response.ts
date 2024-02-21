@@ -1,5 +1,5 @@
-class ResponseOn {
-    success(data, codehttp) {
+export class ResponseOn {
+    success(data: any, codehttp: number) {
         return {
             status: true,
             data,
@@ -8,7 +8,7 @@ class ResponseOn {
         };
     }
 
-    error(error, codehttp) {
+    error(error: any, codehttp: number = 500) {
         console.log(error);
         return {
             status: false,
@@ -18,5 +18,3 @@ class ResponseOn {
         };
     }
 }
-
-module.exports = ResponseOn;
