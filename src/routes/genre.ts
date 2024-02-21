@@ -1,5 +1,6 @@
-const { Router } = require('express');
-const { GenreController } = require('../controllers/genre');
+import { Router } from 'express';
+
+import { GenreController } from '../controllers/genre';
 
 const router = Router();
 
@@ -11,4 +12,4 @@ router.post('/create', genreController.create);
 router.put('/update/:id', genreController.update);
 router.delete('/delete/:id', genreController.exclude);
 
-module.exports = router;
+export default router;

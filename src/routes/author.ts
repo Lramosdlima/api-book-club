@@ -1,5 +1,6 @@
-const { Router } = require('express');
-const { AuthorController } = require('../controllers/author');
+import { Router } from 'express';
+
+import { AuthorController } from '../controllers/author';
 
 const router = Router();
 
@@ -11,4 +12,4 @@ router.post('/create', authorController.create);
 router.put('/update/:id', authorController.update);
 router.delete('/delete/:id', authorController.exclude);
 
-module.exports = router;
+export default router;

@@ -1,5 +1,6 @@
-const { Router } = require('express');
-const { BookController } = require('../controllers/book');
+import { Router } from 'express';
+
+import { BookController } from '../controllers/book';
 
 const router = Router();
 
@@ -16,4 +17,4 @@ router.post('/create/complete', bookController.createWithCompleteInfo);
 router.put('/update/:id', bookController.update);
 router.delete('/delete/:id', bookController.exclude);
 
-module.exports = router;
+export default router;

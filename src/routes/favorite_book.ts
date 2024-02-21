@@ -1,5 +1,6 @@
-const { Router } = require('express');
-const { FavoriteBookController } = require('../controllers/favoriteBook');
+import { Router } from 'express';
+
+import { FavoriteBookController } from '../controllers/favoriteBook';
 
 const router = Router();
 
@@ -11,4 +12,4 @@ router.post('/create', favoriteBookController.create);
 router.put('/update/:id', favoriteBookController.update);
 router.delete('/delete/:id', favoriteBookController.exclude);
 
-module.exports = router;
+export default router;
