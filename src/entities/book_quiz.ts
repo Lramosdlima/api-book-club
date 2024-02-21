@@ -1,4 +1,15 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryColumn, UpdateDateColumn } from 'typeorm';
+import {
+    Column,
+    CreateDateColumn,
+    DeleteDateColumn,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    PrimaryColumn,
+    UpdateDateColumn,
+} from 'typeorm';
+
+import { BookEntity } from './book';
 
 @Entity('book_quiz')
 export class BookQuizEntity {
@@ -7,6 +18,10 @@ export class BookQuizEntity {
 
     @Column()
         book_id: number;
+
+    @ManyToOne(() => BookEntity)
+    @JoinColumn({ name: 'book_id' })
+        book: BookEntity;
 
     @Column()
         name: string;

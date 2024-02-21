@@ -1,4 +1,13 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
+import {
+    Column,
+    CreateDateColumn,
+    DeleteDateColumn,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    PrimaryColumn,
+    UpdateDateColumn,
+} from 'typeorm';
 
 import { CommunityUserEntity } from './community_user';
 
@@ -12,6 +21,7 @@ export class CommunityChatEntity {
         community_user_id: number;
 
     @ManyToOne(() => CommunityUserEntity)
+    @JoinColumn({ name: 'community_user_id' })
         community_user: CommunityUserEntity;
 
     @Column()

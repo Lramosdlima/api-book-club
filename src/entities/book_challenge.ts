@@ -1,4 +1,13 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
+import {
+    Column,
+    CreateDateColumn,
+    DeleteDateColumn,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    PrimaryColumn,
+    UpdateDateColumn,
+} from 'typeorm';
 
 import { BookEntity } from './book';
 
@@ -14,6 +23,7 @@ export class BookChallengeEntity {
         book_id: number;
     
     @ManyToOne(() => BookEntity)
+    @JoinColumn({ name: 'book_id' })
         book: BookEntity;
 
     @CreateDateColumn()

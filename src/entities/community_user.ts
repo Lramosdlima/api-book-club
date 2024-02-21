@@ -1,4 +1,13 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
+import {
+    Column,
+    CreateDateColumn,
+    DeleteDateColumn,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    PrimaryColumn,
+    UpdateDateColumn,
+} from 'typeorm';
 
 import { CommunityEntity } from './community';
 import { UserEntity } from './user';
@@ -12,12 +21,14 @@ export class CommunityUserEntity {
         community_id: number;
 
     @ManyToOne(() => CommunityEntity)
+    @JoinColumn({ name: 'community_id' })
         community: CommunityEntity;
 
     @Column()
         user_id: number;
 
     @ManyToOne(() => UserEntity)
+    @JoinColumn({ name: 'user_id' })
         user: UserEntity;
 
     @CreateDateColumn()

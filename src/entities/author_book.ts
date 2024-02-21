@@ -19,13 +19,14 @@ export class AuthorBookEntity {
 
     @Column()
         author_id: number;
-    
-    @Column()
-        book_id: number;
 
     @OneToOne(() => AuthorEntity)
     @JoinColumn({ name: 'author_id' })
         author: AuthorEntity;
+
+    
+    @Column()
+        book_id: number;
 
     @OneToOne(() => BookEntity)
     @JoinColumn({ name: 'book_id' })
