@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 
 import { RoleEntity } from './role';
 
@@ -22,7 +22,7 @@ export class UserEntity {
     @Column()
         role_id: number;
 
-    @OneToOne(() => RoleEntity)
+    @ManyToOne(() => RoleEntity)
         role: RoleEntity;
 
     @CreateDateColumn()
