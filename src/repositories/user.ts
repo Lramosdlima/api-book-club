@@ -1,8 +1,8 @@
-import { dbConfig } from '../config/database/connection';
+import { AppDataSource } from '../database/connection';
 import { UserEntity } from '../entities/user';
 import { CreateUserDTO, UpdateUserDTO } from '../types/dto';
 
-const userRepository = dbConfig.getRepository(UserEntity);
+const userRepository = AppDataSource.getRepository(UserEntity);
 
 export class UserRepository {
     getAll = async (page?: number, limit?: number): Promise<UserEntity[]> => {

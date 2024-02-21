@@ -1,8 +1,8 @@
-import { dbConfig } from '../config/database/connection';
+import { AppDataSource } from '../database/connection';
 import { BookEntity } from '../entities/book';
 import { CreateBookDTO, UpdateBookDTO } from '../types/dto';
 
-const bookRepository = dbConfig.getRepository(BookEntity);
+const bookRepository = AppDataSource.getRepository(BookEntity);
 
 export class BookRepository {
     getAll = async (page?: number, limit?: number): Promise<BookEntity[]> => {

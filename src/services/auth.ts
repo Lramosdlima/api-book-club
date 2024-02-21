@@ -60,7 +60,7 @@ export class AuthService {
 
             const checkUserExist = await userRepository.getByEmail(email);
 
-            if (!checkUserExist) {
+            if (checkUserExist) {
                 return response.error('Email inválido', 400);
             }
         

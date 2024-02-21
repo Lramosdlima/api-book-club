@@ -1,4 +1,3 @@
-import './config/database/connection';
 import 'reflect-metadata';
 
 import dotenv from 'dotenv';

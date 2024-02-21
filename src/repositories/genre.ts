@@ -1,8 +1,8 @@
-import { dbConfig } from '../config/database/connection';
+import { AppDataSource } from '../database/connection';
 import { GenreEntity } from '../entities/genre';
 import { CreateGenreDTO, UpdateGenreDTO } from '../types/dto';
 
-const genreRepository = dbConfig.getRepository(GenreEntity);
+const genreRepository = AppDataSource.getRepository(GenreEntity);
 
 export class GenreRepository {
     getAll = async (page?: number, limit?: number): Promise<GenreEntity[]> => {

@@ -1,8 +1,8 @@
-import { dbConfig } from '../config/database/connection';
+import { AppDataSource } from '../database/connection';
 import { AuthorEntity } from '../entities/author';
 import { CreateAuthorDTO, UpdateAuthorDTO } from '../types/dto';
 
-const authorRepository = dbConfig.getRepository(AuthorEntity);
+const authorRepository = AppDataSource.getRepository(AuthorEntity);
 
 export class AuthorRepository {
     getAll = async (page?: number, limit?: number): Promise<AuthorEntity[]> => {
