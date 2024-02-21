@@ -39,28 +39,6 @@ export class UserService {
         }
     };
 
-    create = async (name: string, email: string, password: string): Promise<APIResponse<string | null, ErrorTypes>> => {
-        try {
-            if (!name || !email || !password) {
-                return response.error('O nome, o email e a senha são obrigatórios', 400);
-            }
-
-            const checkUserExist = await userRepository.getByEmail(email);
-
-            if (!checkUserExist) {
-                return response.error('O usuário já existe', 400);
-            }
-
-            const roleIdDefault = 2;
-
-            await userRepository.create({ name, email, password, role_id: roleIdDefault });
-
-            return response.success('Usuário foi criado com sucesso', 201);
-        } catch (error) {
-            return response.error(error, 500);
-        }
-    };
-
     update = async (id: number, name: string, email: string): Promise<APIResponse<string | null, ErrorTypes>> => {
         try {
             if (!id) {
