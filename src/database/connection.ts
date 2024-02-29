@@ -13,8 +13,6 @@ export const AppDataSource = new DataSource({
     entities: [process.env.TYPEORM_ENTITIES],
 });
 
-console.log(__dirname);
-
 AppDataSource.initialize()
     .then(() => {
         console.log('Data Source has been initialized!');
