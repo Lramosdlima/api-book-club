@@ -21,7 +21,7 @@ export class AuthService {
                 return response.error('Crendenciais inválidas', 401);
             }
 
-            const passwordStored = user[0].password;
+            const passwordStored = user.password;
 
             const comparePassword = bcrypt.compareSync(password, passwordStored);
 
@@ -32,16 +32,16 @@ export class AuthService {
             const expiresIn = process.env.EXPIRES_TOKEN || '86400';
 
             const accessToken = jwt.sign(
-                { user_id: user[0].id }, 
+                { user_id: user.id }, 
                 process.env.JWT_SECRET,
                 { expiresIn },
             );
 
             const responseFinal = {
                 user: {
-                    id: user[0].id,
-                    name: user[0].name,
-                    email: user[0].email,
+                    id: user.id,
+                    name: user.name,
+                    email: user.email,
                 },
                 accessToken,
             };
@@ -117,7 +117,7 @@ export class AuthService {
                 return response.error('Token inválido', 400);
             }
 
-            const comparePassword = bcrypt.compareSync(password, user[0].password);
+            const comparePassword = bcrypt.compareSync(password, user.password);
 
             if (comparePassword) {
                 return response.error('A nova senha não pode ser igual a senha atual', 400);
@@ -126,7 +126,7 @@ export class AuthService {
             const salt = bcrypt.genSaltSync(10);
             const hashedPassword = bcrypt.hashSync(password, salt);
 
-            await userRepository.updatePassword(user[0].id, hashedPassword);
+            await userRepository.updatePassword(user.id, hashedPassword);
 
             return response.success('Senha alterada com sucesso', 200);
 
