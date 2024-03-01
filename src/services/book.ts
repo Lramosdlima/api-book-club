@@ -12,9 +12,9 @@ const authorRepository = new AuthorRepository();
 async function getBookInfo(books: BookEntity[]) {
     for (let i = 0; i < books.length; i++) {
         const genre = await genreRepository.getById(books[i].genre_id);
-        books[i].genre = genre[0].name;
+        books[i].genre = genre;
         const authorBook = await authorRepository.getById(books[i].id);
-        books[i].author = authorBook[0].name;
+        books[i].author = authorBook;
     }
 
     return books.map((book) => {
