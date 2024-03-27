@@ -9,23 +9,25 @@ import {
     UpdateDateColumn,
 } from 'typeorm';
 
-import { CommunityUserEntity } from './community_user';
+import { UserEntity } from './user';
 
-
-@Entity('community_chat')
-export class CommunityChatEntity {
+@Entity('collection')
+export class CollectionEntity {
     @PrimaryColumn()
         id: number;
 
     @Column()
-        community_user_id: number;
-
-    @ManyToOne(() => CommunityUserEntity)
-    @JoinColumn({ name: 'community_user_id' })
-        community_user: CommunityUserEntity;
+        title: string;
 
     @Column()
-        message: string;
+        owner_id: number;
+
+    @ManyToOne(() => UserEntity)
+    @JoinColumn({ name: 'owner_id' })
+        owner: UserEntity;
+
+    @Column()
+        description: number;
 
     @CreateDateColumn()
         created_at: Date;
@@ -36,3 +38,4 @@ export class CommunityChatEntity {
     @DeleteDateColumn()
         deleted_at!: Date;
 }
+

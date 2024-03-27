@@ -10,9 +10,10 @@ import {
 } from 'typeorm';
 
 import { BookEntity } from './book';
+import { UserEntity } from './user';
 
-@Entity('book_quiz')
-export class BookQuizEntity {
+@Entity( 'book_user')
+export class BookUserEntity {
     @PrimaryColumn()
         id: number;
 
@@ -24,17 +25,33 @@ export class BookQuizEntity {
         book: BookEntity;
 
     @Column()
-        name: string;
+        user_id: number;
+
+    @ManyToOne(() => UserEntity)
+    @JoinColumn({ name: 'user_id' })
+        user: UserEntity;
 
     @Column()
-        description: string;
+        comment: string;
+
+    @Column()
+        rate: number;
+
+    @Column()
+        already_read: boolean;
+
+    @Column()
+        want_to_read: boolean;
+
+    @Column()
+        liked: boolean;
 
     @CreateDateColumn()
         created_at: Date;
 
     @UpdateDateColumn()
-        updated_at!: Date;
+        updated_at: Date;
 
     @DeleteDateColumn()
-        deleted_at!: Date;
+        deleted_at: Date;
 }

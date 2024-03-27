@@ -9,20 +9,13 @@ import {
     UpdateDateColumn,
 } from 'typeorm';
 
-import { CommunityEntity } from './community';
+import { CollectionEntity } from './collection';
 import { UserEntity } from './user';
 
-@Entity('community_user')
-export class CommunityUserEntity {
+@Entity('collection_user_add')
+export class CollectionUserAddEntity {
     @PrimaryColumn()
         id: number;
-
-    @Column()
-        community_id: number;
-
-    @ManyToOne(() => CommunityEntity)
-    @JoinColumn({ name: 'community_id' })
-        community: CommunityEntity;
 
     @Column()
         user_id: number;
@@ -30,6 +23,16 @@ export class CommunityUserEntity {
     @ManyToOne(() => UserEntity)
     @JoinColumn({ name: 'user_id' })
         user: UserEntity;
+
+    @Column()
+        collection_id: number;
+
+    @ManyToOne(() => CollectionEntity)
+    @JoinColumn({ name: 'collection_id' })
+        collection: CollectionEntity;
+
+    @Column()
+        concluded: boolean;
 
     @CreateDateColumn()
         created_at: Date;
