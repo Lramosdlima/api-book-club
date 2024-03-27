@@ -20,8 +20,7 @@ export class CollectionEntity {
         title: string;
 
     @Column()
-        owner_id: string;
-
+        owner_id: number;
 
     @ManyToOne(() => UserEntity)
     @JoinColumn({ name: 'owner_id' })

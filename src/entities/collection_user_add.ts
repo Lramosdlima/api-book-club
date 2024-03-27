@@ -9,8 +9,8 @@ import {
     UpdateDateColumn,
 } from 'typeorm';
 
-import { UserEntity } from './user';
 import { CollectionEntity } from './collection';
+import { UserEntity } from './user';
 
 @Entity('collection_user_add')
 export class CollectionUserAddEntity {
@@ -21,24 +21,21 @@ export class CollectionUserAddEntity {
         title: string;
 
     @Column()
-        user_id: string;
-
+        user_id: number;
 
     @ManyToOne(() => UserEntity)
     @JoinColumn({ name: 'user_id' })
         user: UserEntity;
 
     @Column()
-        collection_id: string;
-
+        collection_id: number;
 
     @ManyToOne(() => CollectionEntity)
     @JoinColumn({ name: 'collection_id' })
         collection: CollectionEntity;
 
-
     @Column()
-        concluded: number;
+        concluded: boolean;
 
     @CreateDateColumn()
         created_at: Date;
