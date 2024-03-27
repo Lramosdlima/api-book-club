@@ -18,9 +18,6 @@ export class CollectionUserAddEntity {
         id: number;
 
     @Column()
-        title: string;
-
-    @Column()
         user_id: number;
 
     @ManyToOne(() => UserEntity)
