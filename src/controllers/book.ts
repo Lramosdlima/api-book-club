@@ -4,7 +4,8 @@ const bookService = new BookService();
 
 export class BookController {
     async getAll(req, res) {
-        const { codehttp, ...rest } = await bookService.getAll();
+        const { page, limit } = req.query;
+        const { codehttp, ...rest } = await bookService.getAll(page, limit);
         return res.status(codehttp).json(rest);
     }
 
@@ -14,9 +15,9 @@ export class BookController {
         return res.status(codehttp).json(rest);
     }
 
-    async create(req, res) {
+    async createWithAuthorExist(req, res) {
         const { title, synopsis, urlImage, genre_id, author_id } = req.body;
-        const { codehttp, ...rest } = await bookService.create(title, synopsis, urlImage, genre_id, author_id);
+        const { codehttp, ...rest } = await bookService.createWithAuthorExist(title, synopsis, urlImage, genre_id, author_id);
         return res.status(codehttp).json(rest);
     }
 
@@ -34,13 +35,14 @@ export class BookController {
     }
 
     async getAllWithCompleteInfo(req, res) {
-        const { codehttp, ...rest } = await bookService.getAllWithCompleteInfo();
+        const { page, limit } = req.query;
+        const { codehttp, ...rest } = await bookService.getAllWithCompleteInfo(page, limit);
         return res.status(codehttp).json(rest);
     }
 
     async createWithCompleteInfo(req, res) {
-        const { title, synopsis, urlImage, genre_id, author } = req.body;
-        const { codehttp, ...rest } = await bookService.createWithCompleteInfo(title, synopsis, urlImage, genre_id, author);
+        const { title, synopsis, urlImage, genre_id, authorName } = req.body;
+        const { codehttp, ...rest } = await bookService.createWithCompleteInfo(title, synopsis, urlImage, genre_id, authorName);
         return res.status(codehttp).json(rest);
     }
 

@@ -23,8 +23,8 @@ export class UserRepository {
         return await userRepository.findOneBy({ email });
     };
 
-    create = async (createUserDTO: CreateUserDTO): Promise<void> => {
-        await userRepository.insert(createUserDTO);
+    create = async (createUserDTO: CreateUserDTO): Promise<UserEntity> => {
+        return await userRepository.save(createUserDTO);
     };
 
     update = async (id: number, updateUserDTO: UpdateUserDTO): Promise<void> => {
