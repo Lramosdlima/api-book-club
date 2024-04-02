@@ -12,71 +12,71 @@ export class UserService {
             const users = await userRepository.getAll(page, limit);
 
             if (users.length === 0 || !users) {
-                return response.error('Nenhum usuário encontrado', HttpStatus.NOT_FOUND);
+                return response.unsuccessfully('Nenhum usuário encontrado', HttpStatus.NOT_FOUND);
             }
 
-            return response.success(users, HttpStatus.OK);
+            return response.success(users);
 
         } catch (error) {
-            return response.error(error, HttpStatus.INTERNAL_SERVER_ERROR);
+            return response.error(error);
         }
     };
 
     getById = async (id: number): Promise<APIResponse<UserEntity | null, ErrorTypes>> => {
         try {
             if (!id) {
-                return response.error('O id é obrigatório', HttpStatus.BAD_REQUEST);
+                return response.unsuccessfully('O id é obrigatório');
             }
 
             const user = await userRepository.getById(id);
 
             if (!user) {
-                return response.error(`Usuário de id ${id} não encontrado`, HttpStatus.NOT_FOUND);
+                return response.unsuccessfully(`Usuário de id ${id} não encontrado`, HttpStatus.NOT_FOUND);
             }
 
-            return response.success(user, HttpStatus.OK);
+            return response.success(user);
         } catch (error) {
-            return response.error(error, HttpStatus.INTERNAL_SERVER_ERROR);
+            return response.error(error);
         }
     };
 
     update = async (id: number, name: string, email: string): Promise<APIResponse<string | null, ErrorTypes>> => {
         try {
             if (!id) {
-                return response.error('O id do usuário é obrigatório', HttpStatus.BAD_REQUEST);
+                return response.unsuccessfully('O id do usuário é obrigatório');
             }
 
             const checkUserExist = await userRepository.getById(id);
 
             if (!checkUserExist) {
-                return response.error(`Usuário de id ${id} não encontrado`, HttpStatus.NOT_FOUND);
+                return response.unsuccessfully(`Usuário de id ${id} não encontrado`, HttpStatus.NOT_FOUND);
             }
         
             await userRepository.update(id, { name, email });
 
-            return response.success('Usuário foi atualizado com sucesso', HttpStatus.OK);
+            return response.success('Usuário foi atualizado com sucesso');
         } catch (error) {
-            return response.error(error, HttpStatus.INTERNAL_SERVER_ERROR);
+            return response.error(error);
         }
     };
 
     exclude = async (id: number): Promise<APIResponse<string | null, ErrorTypes>> => {
         try {
             if (!id) {
-                return response.error('O id é obrigatório', HttpStatus.BAD_REQUEST);
+                return response.unsuccessfully('O id é obrigatório');
             }
 
             const checkUserExist = await userRepository.getById(id);
 
             if (!checkUserExist) {
-                response.error(`Usuário de id ${id} não encontrado`, HttpStatus.NOT_FOUND);
+                response.unsuccessfully(`Usuário de id ${id} não encontrado`, HttpStatus.NOT_FOUND);
             }
 
             await userRepository.exclude(id);
 
-            return response.success('Usuário foi excluído com sucesso', HttpStatus.OK);
+            return response.success('Usuário foi excluído com sucesso');
         } catch (error) {
-            return response.error(error, HttpStatus.INTERNAL_SERVER_ERROR);
+            return response.error(error);
         }
     };
 }

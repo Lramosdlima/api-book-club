@@ -12,91 +12,91 @@ export class GenreService {
             const genres = await genreRepository.getAll(page, limit);
 
             if (genres.length === 0 || !genres) {
-                return response.error('Nenhum gênero encontrado', HttpStatus.NOT_FOUND);
+                return response.unsuccessfully('Nenhum gênero encontrado', HttpStatus.NOT_FOUND);
             }
 
-            return response.success(genres, HttpStatus.OK);
+            return response.success(genres);
 
         } catch (error) {
-            return response.error(error, HttpStatus.INTERNAL_SERVER_ERROR);
+            return response.error(error);
         }
     };
 
     getById = async (id: number): Promise<APIResponse<GenreEntity | null, ErrorTypes>> => {
         try {
             if (!id) {
-                return response.error('O id é obrigatório', HttpStatus.BAD_REQUEST);
+                return response.unsuccessfully('O id é obrigatório');
             }
 
             const genre = await genreRepository.getById(id);
 
             if (!genre) {
-                return response.error(`Gênero de id ${id} não encontrado`, HttpStatus.NOT_FOUND);
+                return response.unsuccessfully(`Gênero de id ${id} não encontrado`, HttpStatus.NOT_FOUND);
             }
 
-            return response.success(genre, HttpStatus.OK);
+            return response.success(genre);
         } catch (error) {
-            return response.error(error, HttpStatus.INTERNAL_SERVER_ERROR);
+            return response.error(error);
         }
     };
 
     create = async (name: string): Promise<APIResponse<string, ErrorTypes>> => {
         try {
             if (!name) {
-                return response.error('O nome é obrigatório', HttpStatus.BAD_REQUEST);
+                return response.unsuccessfully('O nome é obrigatório');
             }
 
             const checkGenreExist = await genreRepository.getByName(name);
 
             if (!checkGenreExist) {
-                return response.error('O gênero já existe', HttpStatus.BAD_REQUEST);
+                return response.unsuccessfully('O gênero já existe');
             }
 
             await genreRepository.create({ name });
 
             return response.success('Gênero foi criado com sucesso', HttpStatus.CREATED);
         } catch (error) {
-            return response.error(error, HttpStatus.INTERNAL_SERVER_ERROR);
+            return response.error(error);
         }
     };
 
     update = async (id: number, name: string): Promise<APIResponse<string, ErrorTypes>> => {
         try {
             if (!id || !name) {
-                return response.error('O id e o nome são obrigatórios', HttpStatus.BAD_REQUEST);
+                return response.unsuccessfully('O id e o nome são obrigatórios');
             }
 
             const checkGenreExist = await genreRepository.getById(id);
 
             if (!checkGenreExist) {
-                return response.error(`Gênero de id ${id} não encontrado`, HttpStatus.NOT_FOUND);
+                return response.unsuccessfully(`Gênero de id ${id} não encontrado`, HttpStatus.NOT_FOUND);
             }
         
             await genreRepository.update(id, { name });
 
-            return response.success('Gênero foi atualizado com sucesso', HttpStatus.OK);
+            return response.success('Gênero foi atualizado com sucesso');
         } catch (error) {
-            return response.error(error, HttpStatus.INTERNAL_SERVER_ERROR);
+            return response.error(error);
         }
     };
 
     exclude = async (id: number): Promise<APIResponse<string, ErrorTypes>> => {
         try {
             if (!id) {
-                return response.error('O id é obrigatório', HttpStatus.BAD_REQUEST);
+                return response.unsuccessfully('O id é obrigatório');
             }
 
             const checkGenreExist = await genreRepository.getById(id);
 
             if (!checkGenreExist) {
-                response.error(`Gênero de id ${id} não encontrado`, HttpStatus.NOT_FOUND);
+                response.unsuccessfully(`Gênero de id ${id} não encontrado`, HttpStatus.NOT_FOUND);
             }
 
             await genreRepository.exclude(id);
 
-            return response.success('Gênero foi excluído com sucesso', HttpStatus.OK);
+            return response.success('Gênero foi excluído com sucesso');
         } catch (error) {
-            return response.error(error, HttpStatus.INTERNAL_SERVER_ERROR);
+            return response.error(error);
         }
     };
 }

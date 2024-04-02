@@ -13,13 +13,13 @@ export class AuthService {
     login = async (email: string, password: string): Promise<APIResponse<ILoginResponse, ErrorTypes>> => {
         try {
             if (!email || !password) {
-                return response.error('O email e a senha são obrigatórios', HttpStatus.BAD_REQUEST);
+                return response.unsuccessfully('O email e a senha são obrigatórios');
             }
 
             const user = await userRepository.getByEmail(email);
 
             if (!user) {
-                return response.error('Crendenciais inválidas', HttpStatus.UNAUTHORIZED);
+                return response.unsuccessfully('Crendenciais inválidas', HttpStatus.UNAUTHORIZED);
             }
 
             const passwordStored = user.password;
@@ -27,7 +27,7 @@ export class AuthService {
             const comparePassword = bcrypt.compareSync(password, passwordStored);
 
             if (!comparePassword) {
-                return response.error('Crendenciais inválidas', HttpStatus.UNAUTHORIZED);
+                return response.unsuccessfully('Crendenciais inválidas', HttpStatus.UNAUTHORIZED);
             }
 
             const expiresIn = process.env.EXPIRES_TOKEN || '86400';
@@ -47,7 +47,7 @@ export class AuthService {
                 accessToken,
             };
 
-            return response.success(responseFinal, HttpStatus.OK);
+            return response.success(responseFinal);
         } catch (error) {
             return response.error(error);
         }
@@ -56,13 +56,13 @@ export class AuthService {
     register = async (name: string, email: string, password: string): Promise<APIResponse<string, ErrorTypes>> => {
         try {
             if (!name || !email || !password) {
-                return response.error('O nome, o email e a senha são obrigatórios', HttpStatus.BAD_REQUEST);
+                return response.unsuccessfully('O nome, o email e a senha são obrigatórios');
             }
 
             const checkUserExist = await userRepository.getByEmail(email);
 
             if (checkUserExist) {
-                return response.error('Email inválido', HttpStatus.BAD_REQUEST);
+                return response.unsuccessfully('Email inválido');
             }
         
             const salt = bcrypt.genSaltSync(10);
@@ -81,13 +81,13 @@ export class AuthService {
     forgotPassword = async (email: string) => {
         try {
             if (!email) {
-                return response.error('O email é obrigatório', HttpStatus.BAD_REQUEST);
+                return response.unsuccessfully('O email é obrigatório');
             }
 
             const user = await userRepository.getByEmail(email);
 
             if (!user) {
-                return response.error('Email inválido', HttpStatus.BAD_REQUEST);
+                return response.unsuccessfully('Email inválido');
             }
 
             // TODO: Serviço de envio de email
@@ -95,10 +95,10 @@ export class AuthService {
             // const enviarEmail = await sendEmail(email);
 
             // if (!enviarEmail) {
-            //     return response.error('Não foi possível enviar o email', HttpStatus.INTERNAL_SERVER_ERROR);
+            //     return response.unsuccessfully('Não foi possível enviar o email', HttpStatus.INTERNAL_SERVER_ERROR);
             // }
 
-            return response.success('Email enviado com sucesso', HttpStatus.OK);
+            return response.success('Email enviado com sucesso');
         } catch (error) {
             return response.error(error);
         }
@@ -107,7 +107,7 @@ export class AuthService {
     resetPassword = async (token: string, password: string): Promise<APIResponse<string, ErrorTypes>> => {
         try {
             if (!token || !password) {
-                return response.error('O token e a senha são obrigatórios', HttpStatus.BAD_REQUEST);
+                return response.unsuccessfully('O token e a senha são obrigatórios');
             }
     
             const decoded = jwt.verify(token, process.env.JWT_SECRET) as IUserToken;
@@ -115,13 +115,13 @@ export class AuthService {
             const  user = await userRepository.getById(decoded.user_id);
 
             if (!user) {
-                return response.error('Token inválido', HttpStatus.BAD_REQUEST);
+                return response.unsuccessfully('Token inválido');
             }
 
             const comparePassword = bcrypt.compareSync(password, user.password);
 
             if (comparePassword) {
-                return response.error('A nova senha não pode ser igual a senha atual', HttpStatus.BAD_REQUEST);
+                return response.unsuccessfully('A nova senha não pode ser igual a senha atual');
             }
 
             const salt = bcrypt.genSaltSync(10);
@@ -129,7 +129,7 @@ export class AuthService {
 
             await userRepository.updatePassword(user.id, hashedPassword);
 
-            return response.success('Senha alterada com sucesso', HttpStatus.OK);
+            return response.success('Senha alterada com sucesso');
 
         } catch (error) {
             return response.error(error);
