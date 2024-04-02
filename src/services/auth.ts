@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 
 import { APIResponse, ErrorTypes, ResponseOn } from '../config/utils/response';
 import { UserRepository } from '../repositories/user';
-import { ILoginResponse, IUserToken } from '../types/interface';
+import { ILoginResponse, IUserToken, RoleEnum } from '../types/interface';
 import { HttpStatus } from '../types/http_status_type';
 
 const response = new ResponseOn();
@@ -68,7 +68,7 @@ export class AuthService {
             const salt = bcrypt.genSaltSync(10);
             const hashedPassword = bcrypt.hashSync(password, salt);
 
-            const roleIdDefault = 2;
+            const roleIdDefault = RoleEnum.USER;
 
             await userRepository.create({name, email, password: hashedPassword, role_id: roleIdDefault});
 
