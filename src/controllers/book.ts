@@ -34,7 +34,8 @@ export class BookController {
     }
 
     async getAllWithCompleteInfo(req, res) {
-        const { codehttp, ...rest } = await bookService.getAllWithCompleteInfo();
+        const { page, limit } = req.query;
+        const { codehttp, ...rest } = await bookService.getAllWithCompleteInfo(page, limit);
         return res.status(codehttp).json(rest);
     }
 

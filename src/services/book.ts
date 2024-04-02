@@ -45,9 +45,9 @@ export class BookService {
         }
     };
 
-    getAllWithCompleteInfo = async () => {
+    getAllWithCompleteInfo = async (page?: number, limit?: number) => {
         try {
-            const books = await bookRepository.getAll();
+            const books = await bookRepository.getAll(page, limit);
 
             if (books.length === 0 || !books) {
                 return response.error('Nenhum livro encontrado', 404);
