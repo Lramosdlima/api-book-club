@@ -58,13 +58,25 @@ export class CollectionService {
         }
     };
 
-    create = async (title: string, description: string, owner_id: number): Promise<APIResponse<string, ErrorTypes>> => {
+    create = async (title: string, description: string, owner_id: number, booksId?: number[]): Promise<APIResponse<string, ErrorTypes>> => {
         try {
             if (!title || !description || !owner_id ) {
                 return response.error('O título, a descrição e o id são obrigatório', HttpStatus.BAD_REQUEST);
             }
 
-            await collectionRepository.create({ title, description, owner_id });
+            const collection = await collectionRepository.create({ title, description, owner_id });
+
+            if (!collection) {
+                return response.error('Erro ao criar a coleção', HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            if (booksId) {
+                booksId.forEach(async (bookId) => {
+                    await collectionRepository.addBookToCollection(collection.id, bookId);
+                });
+
+                return response.success('Coleção com livros criada com sucesso', HttpStatus.CREATED);
+            }
 
             return response.success('Coleção foi criada com sucesso', HttpStatus.CREATED);
         } catch (error) {

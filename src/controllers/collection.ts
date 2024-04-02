@@ -22,8 +22,8 @@ export class CollectionController {
     }
 
     async create(req, res) {
-        const { title, description, owner_id } = req.body;
-        const { codehttp, ...rest } = await collectionService.create(title, description, owner_id);
+        const { title, description, owner_id, books } = req.body;
+        const { codehttp, ...rest } = await collectionService.create(title, description, owner_id, books);
         return res.status(codehttp).json(rest);
     }
 
