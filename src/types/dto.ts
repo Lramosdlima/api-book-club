@@ -57,3 +57,11 @@ export type UpdateCollectionDTO = {
     title?: string;
     description?: string;
 }
+
+export type CreateTagDTO = {
+    name: string;
+}
+
+export type UpdateTagDTO = {
+    name: string;
+}
