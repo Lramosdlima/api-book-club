@@ -15,17 +15,6 @@ export class BookRepository {
         });
     };
 
-    getAllComplete = async (page?: number, limit?: number): Promise<BookEntity[]> => {
-        const skipNumber = page || 1;
-        const takeNumber = limit || 20;
-
-        return await bookRepository.find({
-            relations: ['author', 'genre'],
-            skip: (skipNumber - 1) * takeNumber,
-            take: takeNumber,
-        });
-    };
-
     getById = async (id: number): Promise<BookEntity> => {
         return await bookRepository.findOneBy({ id });
     };
@@ -34,8 +23,8 @@ export class BookRepository {
         return await bookRepository.findOneBy({ title });
     };
 
-    create = async (createBookDTO: CreateBookDTO): Promise<BookEntity> => {
-        return await bookRepository.save(createBookDTO);
+    create = async (createBookDTO: CreateBookDTO): Promise<void> => {
+        await bookRepository.insert(createBookDTO);
     };
 
     update = async (id: number, updateBookDTO: UpdateBookDTO): Promise<void> => {

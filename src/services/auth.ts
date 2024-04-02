@@ -3,8 +3,7 @@ import jwt from 'jsonwebtoken';
 
 import { APIResponse, ErrorTypes, ResponseOn } from '../config/utils/response';
 import { UserRepository } from '../repositories/user';
-import { ILoginResponse, IUserToken, RoleEnum } from '../types/interface';
-import { HttpStatus } from '../types/http_status_type';
+import { ILoginResponse, IUserToken } from '../types/interface';
 
 const response = new ResponseOn();
 const userRepository = new UserRepository();
@@ -13,13 +12,13 @@ export class AuthService {
     login = async (email: string, password: string): Promise<APIResponse<ILoginResponse, ErrorTypes>> => {
         try {
             if (!email || !password) {
-                return response.unsuccessfully('O email e a senha são obrigatórios');
+                return response.error('O email e a senha são obrigatórios', 400);
             }
 
             const user = await userRepository.getByEmail(email);
 
             if (!user) {
-                return response.unsuccessfully('Crendenciais inválidas', HttpStatus.UNAUTHORIZED);
+                return response.error('Crendenciais inválidas', 401);
             }
 
             const passwordStored = user.password;
@@ -27,7 +26,7 @@ export class AuthService {
             const comparePassword = bcrypt.compareSync(password, passwordStored);
 
             if (!comparePassword) {
-                return response.unsuccessfully('Crendenciais inválidas', HttpStatus.UNAUTHORIZED);
+                return response.error('Crendenciais inválidas', 401);
             }
 
             const expiresIn = process.env.EXPIRES_TOKEN || '86400';
@@ -47,7 +46,7 @@ export class AuthService {
                 accessToken,
             };
 
-            return response.success(responseFinal);
+            return response.success(responseFinal, 200);
         } catch (error) {
             return response.error(error);
         }
@@ -56,23 +55,23 @@ export class AuthService {
     register = async (name: string, email: string, password: string): Promise<APIResponse<string, ErrorTypes>> => {
         try {
             if (!name || !email || !password) {
-                return response.unsuccessfully('O nome, o email e a senha são obrigatórios');
+                return response.error('O nome, o email e a senha são obrigatórios', 400);
             }
 
             const checkUserExist = await userRepository.getByEmail(email);
 
             if (checkUserExist) {
-                return response.unsuccessfully('Email inválido');
+                return response.error('Email inválido', 400);
             }
         
             const salt = bcrypt.genSaltSync(10);
             const hashedPassword = bcrypt.hashSync(password, salt);
 
-            const roleIdDefault = RoleEnum.USER;
+            const roleIdDefault = 2;
 
             await userRepository.create({name, email, password: hashedPassword, role_id: roleIdDefault});
 
-            return response.success('Usuário criado com sucesso', HttpStatus.CREATED);
+            return response.success('Usuário criado com sucesso', 201);
         } catch (error) {
             return response.error(error);
         }
@@ -81,13 +80,13 @@ export class AuthService {
     forgotPassword = async (email: string) => {
         try {
             if (!email) {
-                return response.unsuccessfully('O email é obrigatório');
+                return response.error('O email é obrigatório', 400);
             }
 
             const user = await userRepository.getByEmail(email);
 
             if (!user) {
-                return response.unsuccessfully('Email inválido');
+                return response.error('Email inválido', 400);
             }
 
             // TODO: Serviço de envio de email
@@ -95,10 +94,10 @@ export class AuthService {
             // const enviarEmail = await sendEmail(email);
 
             // if (!enviarEmail) {
-            //     return response.unsuccessfully('Não foi possível enviar o email', HttpStatus.INTERNAL_SERVER_ERROR);
+            //     return response.error('Não foi possível enviar o email', 500);
             // }
 
-            return response.success('Email enviado com sucesso');
+            return response.success('Email enviado com sucesso', 200);
         } catch (error) {
             return response.error(error);
         }
@@ -107,7 +106,7 @@ export class AuthService {
     resetPassword = async (token: string, password: string): Promise<APIResponse<string, ErrorTypes>> => {
         try {
             if (!token || !password) {
-                return response.unsuccessfully('O token e a senha são obrigatórios');
+                return response.error('O token e a senha são obrigatórios', 400);
             }
     
             const decoded = jwt.verify(token, process.env.JWT_SECRET) as IUserToken;
@@ -115,13 +114,13 @@ export class AuthService {
             const  user = await userRepository.getById(decoded.user_id);
 
             if (!user) {
-                return response.unsuccessfully('Token inválido');
+                return response.error('Token inválido', 400);
             }
 
             const comparePassword = bcrypt.compareSync(password, user.password);
 
             if (comparePassword) {
-                return response.unsuccessfully('A nova senha não pode ser igual a senha atual');
+                return response.error('A nova senha não pode ser igual a senha atual', 400);
             }
 
             const salt = bcrypt.genSaltSync(10);
@@ -129,7 +128,7 @@ export class AuthService {
 
             await userRepository.updatePassword(user.id, hashedPassword);
 
-            return response.success('Senha alterada com sucesso');
+            return response.success('Senha alterada com sucesso', 200);
 
         } catch (error) {
             return response.error(error);

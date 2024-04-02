@@ -23,8 +23,8 @@ export class GenreRepository {
         return await genreRepository.findOneBy({ name });
     };
 
-    create = async (createGenreDTO: CreateGenreDTO): Promise<GenreEntity> => {
-        return await genreRepository.save(createGenreDTO);
+    create = async (createGenreDTO: CreateGenreDTO): Promise<void> => {
+        await genreRepository.insert(createGenreDTO);
     };
 
     update = async (id: number, updateGenreDTO: UpdateGenreDTO): Promise<void> => {
