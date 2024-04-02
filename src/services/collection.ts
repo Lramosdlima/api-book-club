@@ -125,4 +125,24 @@ export class CollectionService {
             return response.error(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     };
+
+    removeCollectionFromUser = async (id: number): Promise<APIResponse<string, ErrorTypes>> => {
+        try {
+            if (!id) {
+                return response.error('O id é obrigatório', HttpStatus.BAD_REQUEST);
+            }
+
+            const checkCollectionExist = await collectionRepository.getById(id);
+
+            if (!checkCollectionExist) {
+                return response.error(`Coleção de id ${id} não encontrada`, HttpStatus.NOT_FOUND);
+            }
+
+            await collectionRepository.removeCollectionFromUser(id);
+
+            return response.success('Coleção foi removida do usuário com sucesso', HttpStatus.OK);
+        } catch (error) {
+            return response.error(error, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    };
 }

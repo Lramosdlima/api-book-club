@@ -44,4 +44,10 @@ export class CollectionController {
         const { codehttp, ...rest } = await collectionService.exclude(id);
         return res.status(codehttp).json(rest);
     }
+
+    async removeCollectionFromUser(req, res) {
+        const { id } = req.params;
+        const { codehttp, ...rest } = await collectionService.removeCollectionFromUser(id);
+        return res.status(codehttp).json(rest);
+    }
 }
