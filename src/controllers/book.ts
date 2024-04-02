@@ -41,8 +41,8 @@ export class BookController {
     }
 
     async createWithCompleteInfo(req, res) {
-        const { title, synopsis, urlImage, genre_id, author } = req.body;
-        const { codehttp, ...rest } = await bookService.createWithCompleteInfo(title, synopsis, urlImage, genre_id, author);
+        const { title, synopsis, urlImage, genre_id, authorName } = req.body;
+        const { codehttp, ...rest } = await bookService.createWithCompleteInfo(title, synopsis, urlImage, genre_id, authorName);
         return res.status(codehttp).json(rest);
     }
 

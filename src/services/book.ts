@@ -83,13 +83,13 @@ export class BookService {
 
     createWithAuthorExist = async (title: string, synopsis: string, url_image: string, genre_id: number, author_id: number) => {
         try {
-            if (!title || !synopsis || !genre_id) {
-                return response.error('O nome, descrição e o id do gênero são obrigatórios', HttpStatus.BAD_REQUEST);
+            if (!title || !genre_id) {
+                return response.error('O nome e o id do gênero são obrigatórios', HttpStatus.BAD_REQUEST);
             }
 
-            const checkBookExist = await bookRepository.getByTitle(title);
+            const checkBookAlreadyExist = await bookRepository.getByTitle(title);
 
-            if (!checkBookExist) {
+            if (checkBookAlreadyExist) {
                 return response.error('O livro já existe', HttpStatus.BAD_REQUEST);
             }
 
@@ -160,15 +160,15 @@ export class BookService {
         }
     };
 
-    createWithCompleteInfo = async (title: string, synopsis: string, url_image: string, genre_id: number, author: string) => {
+    createWithCompleteInfo = async (title: string, synopsis: string, url_image: string, genre_id: number, authorName: string) => {
         try {
-            if (!title || !synopsis || !url_image || !genre_id || !author ) {
+            if (!title || !synopsis || !url_image || !genre_id || !authorName ) {
                 return response.error('Dados inválidos', HttpStatus.BAD_REQUEST);
             }
 
-            const checkBookExist = await bookRepository.getByTitle(title);
+            const checkBookAlreadyExist = await bookRepository.getByTitle(title);
 
-            if (!checkBookExist) {
+            if (checkBookAlreadyExist) {
                 return response.error('O livro já existe', HttpStatus.BAD_REQUEST);
             }
 
@@ -178,13 +178,16 @@ export class BookService {
                 return response.error('O gênero não existe', HttpStatus.BAD_REQUEST);
             }
 
-            const authorExist = await authorRepository.getByName(author);
+            const checkAuthorAlreadyExist = await authorRepository.getByName(authorName);
 
-            if (!authorExist) {
-                return response.error('O autor não existe', HttpStatus.BAD_REQUEST);
+            if (checkAuthorAlreadyExist) {
+                await bookRepository.create({ title, synopsis, genre_id, url_image, author_id: checkAuthorAlreadyExist.id });
+
+                return response.success('Livro com autor existente foi criado com sucesso', HttpStatus.CREATED);
             }
 
-            await bookRepository.create({ title, synopsis, genre_id, url_image, author_id: authorExist.id });
+            const newAuthor = await authorRepository.create({ name: authorName });
+            await bookRepository.create({ title, synopsis, genre_id, url_image, author_id: newAuthor.id });
 
             return response.success('Livro foi criado com sucesso', HttpStatus.CREATED);
         } catch (error) {
