@@ -4,7 +4,8 @@ const genreService = new GenreService();
 
 export class GenreController {
     async getAll(req, res) {
-        const { codehttp, ...rest } = await genreService.getAll();
+        const { page, limit } = req.query;
+        const { codehttp, ...rest } = await genreService.getAll(page, limit);
         return res.status(codehttp).json(rest);
     }
 

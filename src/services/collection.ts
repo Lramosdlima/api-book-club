@@ -7,9 +7,9 @@ const response = new ResponseOn();
 const collectionRepository = new CollectionRepository();
 
 export class CollectionService {
-    getAll = async (): Promise<APIResponse<CollectionEntity[], ErrorTypes>> => {
+    getAll = async (page?: number, limit?: number): Promise<APIResponse<CollectionEntity[], ErrorTypes>> => {
         try {
-            const collections = await collectionRepository.getAll();
+            const collections = await collectionRepository.getAll(page, limit);
 
             if (collections.length === 0 || !collections) {
                 return response.error('Nenhuma coleção encontrado', HttpStatus.NOT_FOUND);

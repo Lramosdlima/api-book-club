@@ -31,9 +31,9 @@ async function getBookInfo(books: BookEntity[]) {
 }
 
 export class BookService {
-    getAll = async () => {
+    getAll = async (page?: number, limit?: number) => {
         try {
-            const books = await bookRepository.getAll();
+            const books = await bookRepository.getAll(page, limit);
 
             if (books.length === 0 || !books) {
                 return response.error('Nenhum livro encontrado', HttpStatus.NOT_FOUND);

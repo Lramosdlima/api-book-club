@@ -7,9 +7,9 @@ const response = new ResponseOn();
 const authorRepository = new AuthorRepository();
 
 export class AuthorService {
-    getAll = async (): Promise<APIResponse<AuthorEntity[] | string, ErrorTypes>> => {
+    getAll = async (page?: number, limit?: number): Promise<APIResponse<AuthorEntity[] | string, ErrorTypes>> => {
         try {
-            const authors = await authorRepository.getAll();
+            const authors = await authorRepository.getAll(page, limit);
 
             if (authors.length === 0 || !authors) {
                 return response.error('Nenhum autor encontrado', HttpStatus.NOT_FOUND);

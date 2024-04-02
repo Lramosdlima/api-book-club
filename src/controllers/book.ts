@@ -4,7 +4,8 @@ const bookService = new BookService();
 
 export class BookController {
     async getAll(req, res) {
-        const { codehttp, ...rest } = await bookService.getAll();
+        const { page, limit } = req.query;
+        const { codehttp, ...rest } = await bookService.getAll(page, limit);
         return res.status(codehttp).json(rest);
     }
 

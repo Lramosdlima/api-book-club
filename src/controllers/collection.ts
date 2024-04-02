@@ -4,7 +4,8 @@ const collectionService = new CollectionService();
 
 export class CollectionController {
     async getAll(req, res) {
-        const { codehttp, ...rest } = await collectionService.getAll();
+        const { page, limit } = req.query;
+        const { codehttp, ...rest } = await collectionService.getAll(page, limit);
         return res.status(codehttp).json(rest);
     }
 

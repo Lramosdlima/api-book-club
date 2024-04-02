@@ -7,9 +7,9 @@ const response = new ResponseOn();
 const genreRepository = new GenreRepository();
 
 export class GenreService {
-    getAll = async (): Promise<APIResponse<GenreEntity[], ErrorTypes>> => {
+    getAll = async (page?: number, limit?: number): Promise<APIResponse<GenreEntity[], ErrorTypes>> => {
         try {
-            const genres = await genreRepository.getAll();
+            const genres = await genreRepository.getAll(page, limit);
 
             if (genres.length === 0 || !genres) {
                 return response.error('Nenhum gênero encontrado', HttpStatus.NOT_FOUND);

@@ -7,9 +7,9 @@ const response = new ResponseOn();
 const userRepository = new UserRepository();
 
 export class UserService {
-    getAll = async (): Promise<APIResponse<UserEntity[], ErrorTypes>> => {
+    getAll = async (page?: number, limit?: number): Promise<APIResponse<UserEntity[], ErrorTypes>> => {
         try {
-            const users = await userRepository.getAll();
+            const users = await userRepository.getAll(page, limit);
 
             if (users.length === 0 || !users) {
                 return response.error('Nenhum usuário encontrado', HttpStatus.NOT_FOUND);
