@@ -4,8 +4,7 @@ const userService = new UserService();
 
 export class UserController {
     async getAll(req, res) {
-        const { page, limit } = req.query;
-        const { codehttp, ...rest } = await userService.getAll(page, limit);
+        const { codehttp, ...rest } = await userService.getAll();
         return res.status(codehttp).json(rest);
     }
 
