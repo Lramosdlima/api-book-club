@@ -11,7 +11,7 @@ router.get('/all/complete', bookController.getAllWithCompleteInfo);
 router.get('/:id', bookController.getById);
 router.get('/search', bookController.getByTitle);
 
-router.post('/create', bookController.create);
+router.post('/create', bookController.createWithAuthorExist);
 router.post('/create/complete', bookController.createWithCompleteInfo);
 
 router.put('/update/:id', bookController.update);

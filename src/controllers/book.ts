@@ -15,9 +15,9 @@ export class BookController {
         return res.status(codehttp).json(rest);
     }
 
-    async create(req, res) {
+    async createWithAuthorExist(req, res) {
         const { title, synopsis, urlImage, genre_id, author_id } = req.body;
-        const { codehttp, ...rest } = await bookService.create(title, synopsis, urlImage, genre_id, author_id);
+        const { codehttp, ...rest } = await bookService.createWithAuthorExist(title, synopsis, urlImage, genre_id, author_id);
         return res.status(codehttp).json(rest);
     }
 

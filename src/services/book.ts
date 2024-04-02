@@ -81,7 +81,7 @@ export class BookService {
         }
     };
 
-    create = async (title: string, synopsis: string, url_image: string, genre_id: number, author_id: number) => {
+    createWithAuthorExist = async (title: string, synopsis: string, url_image: string, genre_id: number, author_id: number) => {
         try {
             if (!title || !synopsis || !genre_id) {
                 return response.error('O nome, descrição e o id do gênero são obrigatórios', HttpStatus.BAD_REQUEST);
