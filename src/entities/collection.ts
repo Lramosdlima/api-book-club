@@ -27,7 +27,7 @@ export class CollectionEntity {
         owner: UserEntity;
 
     @Column()
-        description: number;
+        description: string;
 
     @CreateDateColumn()
         created_at: Date;

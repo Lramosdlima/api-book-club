@@ -46,3 +46,14 @@ export type CreateGenreDTO = {
 export type UpdateGenreDTO = {
     name: string;
 }
+
+export type CreateCollectionDTO = {
+    title: string;
+    description?: string;
+    owner_id: number;
+}
+
+export type UpdateCollectionDTO = {
+    title?: string;
+    description?: string;
+}
