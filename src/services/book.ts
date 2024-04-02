@@ -3,6 +3,7 @@ import { BookEntity } from '../entities/book';
 import { AuthorRepository } from '../repositories/author';
 import { BookRepository } from '../repositories/book';
 import { GenreRepository } from '../repositories/genre';
+import { HttpStatus } from '../types/http_status_type';
 
 const response = new ResponseOn();
 const bookRepository = new BookRepository();
@@ -35,13 +36,13 @@ export class BookService {
             const books = await bookRepository.getAll();
 
             if (books.length === 0 || !books) {
-                return response.error('Nenhum livro encontrado', 404);
+                return response.error('Nenhum livro encontrado', HttpStatus.NOT_FOUND);
             }
 
-            return response.success(books, 200);
+            return response.success(books, HttpStatus.OK);
 
         } catch (error) {
-            return response.error(error, 500);
+            return response.error(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     };
 
@@ -50,144 +51,144 @@ export class BookService {
             const books = await bookRepository.getAll(page, limit);
 
             if (books.length === 0 || !books) {
-                return response.error('Nenhum livro encontrado', 404);
+                return response.error('Nenhum livro encontrado', HttpStatus.NOT_FOUND);
             }
 
             const filterBooks = await getBookInfo(books);
 
-            return response.success(filterBooks, 200);
+            return response.success(filterBooks, HttpStatus.OK);
 
         } catch (error) {
-            return response.error(error, 500);
+            return response.error(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     };
 
     getById = async (id: number) => {
         try {
             if (!id) {
-                return response.error('O id é obrigatório', 400);
+                return response.error('O id é obrigatório', HttpStatus.BAD_REQUEST);
             }
 
             const book = await bookRepository.getById(id);
 
             if (!book) {
-                return response.error(`Livro de id ${id} não encontrado`, 404);
+                return response.error(`Livro de id ${id} não encontrado`, HttpStatus.NOT_FOUND);
             }
 
-            return response.success(book, 200);
+            return response.success(book, HttpStatus.OK);
         } catch (error) {
-            return response.error(error, 500);
+            return response.error(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     };
 
     create = async (title: string, synopsis: string, url_image: string, genre_id: number, author_id: number) => {
         try {
             if (!title || !synopsis || !genre_id) {
-                return response.error('O nome, descrição e o id do gênero são obrigatórios', 400);
+                return response.error('O nome, descrição e o id do gênero são obrigatórios', HttpStatus.BAD_REQUEST);
             }
 
             const checkBookExist = await bookRepository.getByTitle(title);
 
             if (!checkBookExist) {
-                return response.error('O livro já existe', 400);
+                return response.error('O livro já existe', HttpStatus.BAD_REQUEST);
             }
 
             await bookRepository.create({ title, synopsis, url_image, genre_id, author_id });
 
-            return response.success('Livro foi criado com sucesso', 201);
+            return response.success('Livro foi criado com sucesso', HttpStatus.CREATED);
         } catch (error) {
-            return response.error(error, 500);
+            return response.error(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     };
 
     update = async (id: number, title: string, synopsis: string, url_image: string, genre_id: number, author_id: number) => {
         try {
             if (!id ) {
-                return response.error('O id do livro é obrigatório', 400);
+                return response.error('O id do livro é obrigatório', HttpStatus.BAD_REQUEST);
             }
 
             const checkBookExist = await bookRepository.getById(id);
 
             if (!checkBookExist) {
-                return response.error(`Livro de id ${id} não encontrado`, 404);
+                return response.error(`Livro de id ${id} não encontrado`, HttpStatus.NOT_FOUND);
             }
         
             await bookRepository.update(id, { title, synopsis, url_image, genre_id, author_id });
 
-            return response.success('Livro foi atualizado com sucesso', 200);
+            return response.success('Livro foi atualizado com sucesso', HttpStatus.OK);
         } catch (error) {
-            return response.error(error, 500);
+            return response.error(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     };
 
     exclude = async (id: number) => {
         try {
             if (!id) {
-                return response.error('O id é obrigatório', 400);
+                return response.error('O id é obrigatório', HttpStatus.BAD_REQUEST);
             }
 
             const checkBookExist = await bookRepository.getById(id);
 
             if (!checkBookExist) {
-                response.error(`Livro de id ${id} não encontrado`, 404);
+                response.error(`Livro de id ${id} não encontrado`, HttpStatus.NOT_FOUND);
             }
 
             await bookRepository.exclude(id);
 
-            return response.success('Livro foi excluído com sucesso', 200);
+            return response.success('Livro foi excluído com sucesso', HttpStatus.OK);
         } catch (error) {
-            return response.error(error, 500);
+            return response.error(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     };
 
     getByTitle = async (title: string) => {
         try {
             if (!title) {
-                return response.error('O título é obrigatório', 400);
+                return response.error('O título é obrigatório', HttpStatus.BAD_REQUEST);
             }
 
             const book = await bookRepository.getByTitle(title);
 
             if (!book) {
-                return response.error(`Livro de título ${title} não encontrado`, 404);
+                return response.error(`Livro de título ${title} não encontrado`, HttpStatus.NOT_FOUND);
             }
 
-            return response.success(book, 200);
+            return response.success(book, HttpStatus.OK);
 
         } catch (error) {
-            return response.error(error, 500);
+            return response.error(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     };
 
     createWithCompleteInfo = async (title: string, synopsis: string, url_image: string, genre_id: number, author: string) => {
         try {
             if (!title || !synopsis || !url_image || !genre_id || !author ) {
-                return response.error('Dados inválidos', 400);
+                return response.error('Dados inválidos', HttpStatus.BAD_REQUEST);
             }
 
             const checkBookExist = await bookRepository.getByTitle(title);
 
             if (!checkBookExist) {
-                return response.error('O livro já existe', 400);
+                return response.error('O livro já existe', HttpStatus.BAD_REQUEST);
             }
 
             const checkGenreExist = await genreRepository.getById(genre_id);
 
             if (!checkGenreExist) {
-                return response.error('O gênero não existe', 400);
+                return response.error('O gênero não existe', HttpStatus.BAD_REQUEST);
             }
 
             const authorExist = await authorRepository.getByName(author);
 
             if (!authorExist) {
-                return response.error('O autor não existe', 400);
+                return response.error('O autor não existe', HttpStatus.BAD_REQUEST);
             }
 
             await bookRepository.create({ title, synopsis, genre_id, url_image, author_id: authorExist.id });
 
-            return response.success('Livro foi criado com sucesso', 201);
+            return response.success('Livro foi criado com sucesso', HttpStatus.CREATED);
         } catch (error) {
-            return response.error(error, 500);
+            return response.error(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     };
 }
