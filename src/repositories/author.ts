@@ -23,8 +23,8 @@ export class AuthorRepository {
         return await authorRepository.findOneBy({ name });
     };
 
-    create = async (createAuthorDTO: CreateAuthorDTO): Promise<void> => {
-        await authorRepository.insert(createAuthorDTO);
+    create = async (createAuthorDTO: CreateAuthorDTO): Promise<AuthorEntity> => {
+        return await authorRepository.save(createAuthorDTO);
     };
 
     update = async (id: number, updateAuthorDTO: UpdateAuthorDTO): Promise<void> => {
