@@ -9,6 +9,12 @@ export class BookController {
         return res.status(codehttp).json(rest);
     }
 
+    async getAllWithCompleteInfo(req, res) {
+        const { page, limit } = req.query;
+        const { codehttp, ...rest } = await bookService.getAllWithCompleteInfo(page, limit);
+        return res.status(codehttp).json(rest);
+    }
+
     async getById(req, res) {
         const { id } = req.params;
         const { codehttp, ...rest } = await bookService.getById(id);
@@ -31,12 +37,6 @@ export class BookController {
     async exclude(req, res) {
         const { id } = req.params;
         const { codehttp, ...rest } = await bookService.exclude(id);
-        return res.status(codehttp).json(rest);
-    }
-
-    async getAllWithCompleteInfo(req, res) {
-        const { page, limit } = req.query;
-        const { codehttp, ...rest } = await bookService.getAllWithCompleteInfo(page, limit);
         return res.status(codehttp).json(rest);
     }
 
