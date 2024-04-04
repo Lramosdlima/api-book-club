@@ -6,16 +6,17 @@ const router = Router();
 
 const collectionController = new CollectionController();
 
-router.get('/all', collectionController.getAll);
-router.get('/:id', collectionController.getById);
-router.get('/user/:owner_id', collectionController.getAllByOwnerId);
+router.get('/all', collectionController.getAll); // Todas coleções da comunidade
+router.get('/:id', collectionController.getById); // Uma coleção específica
+router.get('/user/:owner_id', collectionController.getAllByOwnerId); // Coleções que o usuário criou
 
-router.post('/create', collectionController.create);
-router.post('/user/add', collectionController.addCollectionToUser);
+router.post('/create', collectionController.create); // Cria uma nova coleção
+router.post('/user/add', collectionController.addCollectionToUser); // Adiciona uma coleção a um usuário
 
-router.put('/update/:id', collectionController.update);
+router.patch('/update/:id', collectionController.update); // Atualiza nome ou descrição de uma coleção
+router.put('/add/book/:id', collectionController.addBookToCollection); // Adiciona um ou mais livros a uma coleção
 
-router.delete('/delete/:id', collectionController.exclude);
-router.delete('/user/remove/:id', collectionController.removeCollectionFromUser);
+router.delete('/delete/:id', collectionController.exclude); // Deleta uma coleção
+router.delete('/user/remove/:id', collectionController.removeCollectionFromUser); // Remove uma coleção de um usuário
 
 export default router;

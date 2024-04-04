@@ -40,6 +40,13 @@ export class CollectionController {
         return res.status(codehttp).json(rest);
     }
 
+    async addBookToCollection(req, res) {
+        const { id } = req.params;
+        const { bookId } = req.body;
+        const { codehttp, ...rest } = await collectionService.addBookToCollection(id, bookId);
+        return res.status(codehttp).json(rest);
+    }
+
     async exclude(req, res) {
         const { id } = req.params;
         const { codehttp, ...rest } = await collectionService.exclude(id);

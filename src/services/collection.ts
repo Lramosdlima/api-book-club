@@ -101,7 +101,7 @@ export class CollectionService {
     update = async (id: number, title: string, description: string): Promise<APIResponse<string, ErrorTypes>> => {
         try {
             if (!id) {
-                return response.unsuccessfully('O id é obrigatório');
+                return response.unsuccessfully('O id da coleção é obrigatório');
             }
 
             const checkCollectionExist = await collectionRepository.getById(id);
@@ -118,10 +118,35 @@ export class CollectionService {
         }
     };
 
+    addBookToCollection = async (id: number, bookId: number): Promise<APIResponse<string, ErrorTypes>> => {
+        try {
+            if (!id) {
+                return response.unsuccessfully('O id da coleção é obrigatório');
+            }
+
+            if (!bookId) {
+                return response.unsuccessfully('O id do livro é obrigatório');
+            }
+
+            const checkCollectionExist = await collectionRepository.getById(id);
+
+            if (!checkCollectionExist) {
+                return response.unsuccessfully(`Coleção de id ${id} não encontrada`, HttpStatus.NOT_FOUND);
+            }
+
+            await collectionRepository.addBookToCollection(id, bookId);
+
+            return response.success('Foi adicionado um livro a coleção com sucesso');
+
+        } catch (error) {
+            return response.error(error);
+        }
+    };
+
     exclude = async (id: number): Promise<APIResponse<string, ErrorTypes>> => {
         try {
             if (!id) {
-                return response.unsuccessfully('O id é obrigatório');
+                return response.unsuccessfully('O id da coleção é obrigatório');
             }
 
             const checkCollectionExist = await collectionRepository.getById(id);
