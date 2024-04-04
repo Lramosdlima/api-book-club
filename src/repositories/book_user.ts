@@ -22,6 +22,7 @@ export class BookUserRepository {
 
         return bookUserRepository.find({
             where: { user_id },
+            relations: ['book'],
             skip: (skipNumber - 1) * takeNumber,
             take: takeNumber,
         });
