@@ -9,6 +9,8 @@ const interactionController = new InteractionController();
 router.get('/book/:book_id', interactionController.getAllInteractionsByBookId);
 router.get('/user/:user_id', interactionController.getAllInteractionsByUserId);
 
+router.get('/user/especific/:user_id', interactionController.getEspecificInteractionsByUserId);
+
 router.post('/add', interactionController.add);
 
 router.put('/update/:id', interactionController.update);

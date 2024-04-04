@@ -16,17 +16,29 @@ export class InteractionRepository {
         });
     };
 
-    getAllByUserId(user_id: number, page?: number, limit?: number): Promise<InteractionEntity[]> {
+    getAllByUserId = async (user_id: number, page?: number, limit?: number): Promise<InteractionEntity[]> => {
         const skipNumber = page || 1;
         const takeNumber = limit || 20;
 
-        return interactionRepository.find({
+        return await interactionRepository.find({
             where: { user_id },
             relations: ['book'],
             skip: (skipNumber - 1) * takeNumber,
             take: takeNumber,
         });
-    }
+    };
+
+    getEspecificByUserId = async (user_id: number, already_read: boolean, want_to_read: boolean, liked: boolean ): Promise<InteractionEntity[]> => {
+        return await interactionRepository.find({
+            where: {
+                user_id,
+                already_read,
+                want_to_read,
+                liked,
+            },
+            relations: ['book'],
+        });
+    };
 
     getById = async (id: number): Promise<InteractionEntity> => {
         return await interactionRepository.findOneBy({ id });

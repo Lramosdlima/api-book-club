@@ -16,6 +16,18 @@ export class InteractionController {
         return res.status(codehttp).json(rest);
     }
 
+    async getEspecificInteractionsByUserId(req, res) {
+        const { user_id } = req.params;
+        const { already_read, want_to_read, liked } = req.query;
+        const { codehttp, ...rest } = await interactionService.getEspecificInteractionsByUserId(
+            user_id,
+            already_read === 'true',
+            want_to_read === 'true',
+            liked === 'true'
+        );
+        return res.status(codehttp).json(rest);
+    }
+
     async add(req, res) {
         const { user_id, book_id, already_read, want_to_read, liked } = req.body;
         const { codehttp, ...rest } = await interactionService.add({ user_id, book_id, already_read, want_to_read, liked });
