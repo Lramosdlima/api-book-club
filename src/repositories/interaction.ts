@@ -44,7 +44,6 @@ export class InteractionRepository {
         });
     };
 
-
     create = async (createInteractionDTO: CreateInteractionDTO): Promise<InteractionEntity> => {
         return await interactionRepository.save(createInteractionDTO);
     };
