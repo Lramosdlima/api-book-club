@@ -24,6 +24,14 @@ export class BookRepository {
         return await bookRepository.findOneBy({ title });
     };
 
+    getByAuthorId = async (author_id: number): Promise<BookEntity[]> => {
+        return await bookRepository.findBy({ author_id });
+    };
+
+    getByGenreId = async (genre_id: number): Promise<BookEntity[]> => {
+        return await bookRepository.findBy({ genre_id });
+    };
+
     create = async (createBookDTO: CreateBookDTO): Promise<BookEntity> => {
         return await bookRepository.save(createBookDTO);
     };

@@ -3,6 +3,7 @@ import { BookEntity } from '../entities/book';
 import { AuthorRepository } from '../repositories/author';
 import { BookRepository } from '../repositories/book';
 import { GenreRepository } from '../repositories/genre';
+import { InteractionRepository } from '../repositories/interaction';
 import { CreateBookDTO, UpdateBookDTO } from '../types/dto';
 import { HttpStatus } from '../types/http_status_type';
 
@@ -10,6 +11,7 @@ const response = new ResponseOn();
 const bookRepository = new BookRepository();
 const genreRepository = new GenreRepository();
 const authorRepository = new AuthorRepository();
+const interactionRepository = new InteractionRepository();
 
 function formatBookInfo(books: BookEntity[]) {
     return books.map((book) => {
@@ -141,6 +143,69 @@ export class BookService {
             }
 
             return response.success(book);
+
+        } catch (error) {
+            return response.error(error);
+        }
+    };
+
+    getByGenreId = async (genre_id: number) => {
+        try {
+            if (!genre_id) {
+                return response.unsuccessfully('O id do gênero é obrigatório');
+            }
+
+            const books = await bookRepository.getByGenreId(genre_id);
+
+            if (!books) {
+                return response.unsuccessfully('Nenhum livro encontrado', HttpStatus.NOT_FOUND);
+            }
+
+            return response.success(books);
+
+        } catch (error) {
+            return response.error(error);
+        }
+    };
+
+    getByAuthorId = async (author_id: number) => {
+        try {
+            if (!author_id) {
+                return response.unsuccessfully('O id do autor é obrigatório');
+            }
+
+            const books = await bookRepository.getByAuthorId(author_id);
+
+            if (!books) {
+                return response.unsuccessfully('Nenhum livro encontrado', HttpStatus.NOT_FOUND);
+            }
+
+            return response.success(books);
+
+        } catch (error) {
+            return response.error(error);
+        }
+    };
+
+    getMostLiked = async () => {
+        try {
+            const booksLiked = await interactionRepository.getBooksLiked();
+
+            if (!booksLiked) {
+                return response.unsuccessfully('Nenhum livro com gostei encontrado', HttpStatus.NOT_FOUND);
+            }
+
+            const countLikes = booksLiked.reduce((acc, interaction) => {
+                acc[interaction.book.id] = (acc[interaction.book.id] || 0) + 1;
+                return acc;
+            });
+    
+            const mostLikedBooks = booksLiked
+                .filter((interaction) => countLikes[interaction.book.id] > 0)
+                .sort((a, b) => countLikes[b.book.id] - countLikes[a.book.id])
+                .slice(0, 5);
+
+            return response.success(mostLikedBooks);
 
         } catch (error) {
             return response.error(error);

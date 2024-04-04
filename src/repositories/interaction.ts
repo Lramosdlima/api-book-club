@@ -36,6 +36,15 @@ export class InteractionRepository {
         return await interactionRepository.findOneBy({ user_id, book_id });
     };
 
+    getBooksLiked = async (): Promise<InteractionEntity[]> => {
+        return await interactionRepository.find({
+            select: ['book', 'liked'],
+            where: { liked: true },
+            relations: ['book'],
+        });
+    };
+
+
     create = async (createInteractionDTO: CreateInteractionDTO): Promise<InteractionEntity> => {
         return await interactionRepository.save(createInteractionDTO);
     };
