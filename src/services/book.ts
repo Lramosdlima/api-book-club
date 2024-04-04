@@ -3,6 +3,7 @@ import { BookEntity } from '../entities/book';
 import { AuthorRepository } from '../repositories/author';
 import { BookRepository } from '../repositories/book';
 import { GenreRepository } from '../repositories/genre';
+import { CreateBookDTO, UpdateBookDTO } from '../types/dto';
 import { HttpStatus } from '../types/http_status_type';
 
 const response = new ResponseOn();
@@ -24,21 +25,6 @@ function formatBookInfo(books: BookEntity[]) {
 }
 
 export class BookService {
-    getAll = async (page?: number, limit?: number) => {
-        try {
-            const books = await bookRepository.getAll(page, limit);
-
-            if (books.length === 0 || !books) {
-                return response.unsuccessfully('Nenhum livro encontrado', HttpStatus.NOT_FOUND);
-            }
-
-            return response.success(books);
-
-        } catch (error) {
-            return response.error(error);
-        }
-    };
-
     getAllWithCompleteInfo = async (page?: number, limit?: number) => {
         try {
             const books = await bookRepository.getAllComplete(page, limit);
@@ -59,7 +45,7 @@ export class BookService {
     getById = async (id: number) => {
         try {
             if (!id) {
-                return response.unsuccessfully('O id é obrigatório');
+                return response.unsuccessfully('O id do livro é obrigatório');
             }
 
             const book = await bookRepository.getById(id);
@@ -74,8 +60,10 @@ export class BookService {
         }
     };
 
-    createWithAuthorExist = async (title: string, synopsis: string, url_image: string, genre_id: number, author_id: number) => {
+    createWithAuthorAlreadyExists = async (createBookDTO: CreateBookDTO) => {
         try {
+            const { title, synopsis, url_image, genre_id, author_id } = createBookDTO;
+
             if (!title || !genre_id) {
                 return response.unsuccessfully('O nome e o id do gênero são obrigatórios');
             }
@@ -94,11 +82,17 @@ export class BookService {
         }
     };
 
-    update = async (id: number, title: string, synopsis: string, url_image: string, genre_id: number, author_id: number) => {
+    update = async (id: number, updateBookDTO: UpdateBookDTO) => {
         try {
-            if (!id ) {
+            if (!id) {
                 return response.unsuccessfully('O id do livro é obrigatório');
             }
+
+            if (!updateBookDTO) {
+                return response.unsuccessfully('Os dados do livro são obrigatórios');
+            }
+
+            const { title, synopsis, url_image, genre_id, author_id } = updateBookDTO;
 
             const checkBookExist = await bookRepository.getById(id);
 
@@ -117,7 +111,7 @@ export class BookService {
     exclude = async (id: number) => {
         try {
             if (!id) {
-                return response.unsuccessfully('O id é obrigatório');
+                return response.unsuccessfully('O id do livro é obrigatório');
             }
 
             const checkBookExist = await bookRepository.getById(id);

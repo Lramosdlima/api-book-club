@@ -5,16 +5,6 @@ import { CreateBookDTO, UpdateBookDTO } from '../types/dto';
 const bookRepository = AppDataSource.getRepository(BookEntity);
 
 export class BookRepository {
-    getAll = async (page?: number, limit?: number): Promise<BookEntity[]> => {
-        const skipNumber = page || 1;
-        const takeNumber = limit || 20;
-
-        return await bookRepository.find({
-            skip: (skipNumber - 1) * takeNumber,
-            take: takeNumber,
-        });
-    };
-
     getAllComplete = async (page?: number, limit?: number): Promise<BookEntity[]> => {
         const skipNumber = page || 1;
         const takeNumber = limit || 20;
