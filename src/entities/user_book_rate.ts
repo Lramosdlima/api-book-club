@@ -10,11 +10,10 @@ import {
 } from 'typeorm';
 
 import { BookEntity } from './book';
-import { TagEntity } from './tag';
 import { UserEntity } from './user';
 
-@Entity( 'user_book_tag')
-export class UserBookTagEntity {
+@Entity( 'user_book_rate')
+export class UserBookRateEntity {
     @PrimaryColumn()
         id: number;
 
@@ -33,11 +32,10 @@ export class UserBookTagEntity {
         book: BookEntity;
 
     @Column()
-        tag_id: number;
+        comment: string;
 
-    @ManyToOne(() => TagEntity)
-    @JoinColumn({ name: 'tag_id' })
-        tag: TagEntity;
+    @Column()
+        rate: number;
 
     @CreateDateColumn()
         created_at: Date;

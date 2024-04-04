@@ -8,6 +8,7 @@ import { GenreEntity } from './genre';
 import { RoleEntity } from './role';
 import { TagEntity } from './tag';
 import { UserEntity } from './user';
+import { UserBookRateEntity } from './user_book_rate';
 import { UserBookTagEntity } from './user_book_tag';
 
 export default [
@@ -20,6 +21,7 @@ export default [
     GenreEntity,
     RoleEntity,
     TagEntity,
+    UserBookRateEntity,
     UserBookTagEntity,
     UserEntity
 ];

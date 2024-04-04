@@ -32,12 +32,6 @@ export class BookUserEntity {
         user: UserEntity;
 
     @Column()
-        comment: string;
-
-    @Column()
-        rate: number;
-
-    @Column()
         already_read: boolean;
 
     @Column()
