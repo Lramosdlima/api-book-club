@@ -12,8 +12,8 @@ import {
 import { BookEntity } from './book';
 import { UserEntity } from './user';
 
-@Entity( 'book_user')
-export class BookUserEntity {
+@Entity( 'interaction')
+export class InteractionEntity {
     @PrimaryColumn()
         id: number;
 

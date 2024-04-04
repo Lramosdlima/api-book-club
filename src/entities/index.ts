@@ -1,6 +1,6 @@
 import { AuthorEntity } from './author';
 import { BookEntity } from './book';
-import { BookUserEntity } from './book_user';
+import { InteractionEntity } from './interaction';
 import { CollectionEntity } from './collection';
 import { CollectionBookEntity } from './collection_book';
 import { CollectionUserAddEntity } from './collection_user_add';
@@ -13,7 +13,7 @@ import { UserBookTagEntity } from './user_book_tag';
 
 export default [
     AuthorEntity,
-    BookUserEntity,
+    InteractionEntity,
     BookEntity,
     CollectionBookEntity,
     CollectionUserAddEntity,

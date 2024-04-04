@@ -66,7 +66,7 @@ export type UpdateTagDTO = {
     name: string;
 }
 
-export type CreateBookUserDTO = {
+export type CreateInteractionDTO = {
    user_id: number;
    book_id: number;
    already_read: boolean;
@@ -74,7 +74,7 @@ export type CreateBookUserDTO = {
    liked: boolean;
 }
 
-export type UpdateBookUserDTO = {
+export type UpdateInteractionDTO = {
     already_read?: boolean;
     want_to_read?: boolean;
     liked?: boolean;

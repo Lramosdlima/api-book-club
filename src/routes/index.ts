@@ -3,7 +3,7 @@ import { Router } from 'express';
 import AuthRouter from './auth';
 import AuthorRouter from './author';
 import BookRouter from './book';
-import BookUserRouter from './book_user';
+import InteractionRouter from './interaction';
 import CollectionRouter from './collection';
 import GenreRouter from './genre';
 import { Middleware } from './middleware';
@@ -16,7 +16,7 @@ const middleware = new Middleware();
 
 router.use('/auth', AuthRouter);
 router.use('/book', middleware.auth, BookRouter);
-router.use('/interaction', middleware.auth, BookUserRouter);
+router.use('/interaction', middleware.auth, InteractionRouter);
 router.use('/author', middleware.auth, AuthorRouter);
 router.use('/genre', middleware.auth, GenreRouter);
 router.use('/collecion', middleware.auth, CollectionRouter);
