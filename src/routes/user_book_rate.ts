@@ -4,12 +4,12 @@ import { UserBookRateController } from '../controllers/user_book_rate';
 
 const router = Router();
 
-const UserBookRateController = new UserBookRateController();
+const userBookRateController = new UserBookRateController();
 
-router.get('/all', UserBookRateController.getAll);
-router.get('/:id', UserBookRateController.getById);
-router.get('/by/book/:book_id', UserBookRateController.getByBookId);
-router.post('/create', UserBookRateController.create);
-router.put('/update/:id', UserBookRateController.update);
-router.delete('/delete/:id',UserBookRateController.exclude);
+router.get('/all',  userBookRateController.getAll);
+router.get('/:id',  userBookRateController.getById);
+router.get('/by/book/:book_id',  userBookRateController.getByBookId);
+router.post('/create',  userBookRateController.create);
+router.put('/update/:id',  userBookRateController.update);
+router.delete('/delete/:id', userBookRateController.exclude);
 export default router;
