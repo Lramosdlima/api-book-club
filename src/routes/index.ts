@@ -9,6 +9,7 @@ import InteractionRouter from './interaction';
 import { Middleware } from './middleware';
 import TagRouter from './tag';
 import UserRouter from './user';
+import RateRouter from './user_book_rate';
 
 const router = Router();
 
@@ -22,5 +23,6 @@ router.use('/genre', middleware.auth, GenreRouter);
 router.use('/interaction', middleware.auth, InteractionRouter);
 router.use('/tag', middleware.auth, TagRouter);
 router.use('/user', middleware.auth, UserRouter);
+router.use('/rate', middleware.auth, RateRouter);
 
 export default router;
