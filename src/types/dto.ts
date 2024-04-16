@@ -79,3 +79,15 @@ export type UpdateInteractionDTO = {
     want_to_read?: boolean;
     liked?: boolean;
 }
+
+export type CreateUserBookRateDTO = {
+    user_id: number;
+    book_id: number;
+    rate?: number;
+    comment?: string;
+}
+
+export type UpdateUserBookRateDTO = {
+    rate?: number;
+    comment?: string;
+}

@@ -8,8 +8,13 @@ const userBookRateController = new UserBookRateController();
 
 router.get('/all',  userBookRateController.getAll);
 router.get('/:id',  userBookRateController.getById);
-router.get('/by/book/:book_id',  userBookRateController.getByBookId);
+router.get('/by/book/:book_id',  userBookRateController.getAllByBookId);
+router.get('/by/user/:user_id',  userBookRateController.getAllByUserId);
+
 router.post('/create',  userBookRateController.create);
+
 router.put('/update/:id',  userBookRateController.update);
+
 router.delete('/delete/:id', userBookRateController.exclude);
+
 export default router;

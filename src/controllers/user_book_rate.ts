@@ -15,22 +15,28 @@ export class UserBookRateController {
         return res.status(codehttp).json(rest);
     }
 
-    async getByBookId(req, res) {
+    async getAllByBookId(req, res) {
         const { book_id } = req.params;
-        const { codehttp, ...rest } = await userBookRateService.getById(book_id);
+        const { codehttp, ...rest } = await userBookRateService.getAllByBookId(book_id);
+        return res.status(codehttp).json(rest);
+    }
+
+    async getAllByUserId(req, res) {
+        const { user_id } = req.params;
+        const { codehttp, ...rest } = await userBookRateService.getAllByUserId(user_id);
         return res.status(codehttp).json(rest);
     }
 
     async create(req, res) {
-        const { rate } = req.body;
-        const { codehttp, ...rest } = await userBookRateService.create(rate);
+        const { user_id, book_id, rate, comment } = req.body;
+        const { codehttp, ...rest } = await userBookRateService.create({ user_id, book_id, rate, comment });
         return res.status(codehttp).json(rest);
     }
 
     async update(req, res) {
         const { id } = req.params;
-        const { rate } = req.body;
-        const { codehttp, ...rest } = await userBookRateService.update(id, rate);
+        const { rate, comment } = req.body;
+        const { codehttp, ...rest } = await userBookRateService.update(id, { rate, comment });
         return res.status(codehttp).json(rest);
     }
 
