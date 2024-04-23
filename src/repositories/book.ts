@@ -5,13 +5,14 @@ import { CreateBookDTO, UpdateBookDTO } from '../types/dto';
 const bookRepository = AppDataSource.getRepository(BookEntity);
 
 export class BookRepository {
-    getAll = async (page?: number, limit?: number): Promise<BookEntity[]> => {
+    getAllComplete = async (page?: number, limit?: number): Promise<BookEntity[]> => {
         const skipNumber = page || 1;
         const takeNumber = limit || 20;
 
         return await bookRepository.find({
-            skip: (skipNumber - 1) * takeNumber,
+            relations: ['author', 'genre'],
             take: takeNumber,
+            skip: (skipNumber - 1) * takeNumber,
         });
     };
 
@@ -23,8 +24,16 @@ export class BookRepository {
         return await bookRepository.findOneBy({ title });
     };
 
-    create = async (createBookDTO: CreateBookDTO): Promise<void> => {
-        await bookRepository.insert(createBookDTO);
+    getByAuthorId = async (author_id: number): Promise<BookEntity[]> => {
+        return await bookRepository.findBy({ author_id });
+    };
+
+    getByGenreId = async (genre_id: number): Promise<BookEntity[]> => {
+        return await bookRepository.findBy({ genre_id });
+    };
+
+    create = async (createBookDTO: CreateBookDTO): Promise<BookEntity> => {
+        return await bookRepository.save(createBookDTO);
     };
 
     update = async (id: number, updateBookDTO: UpdateBookDTO): Promise<void> => {

@@ -3,11 +3,15 @@ import { BookEntity } from '../entities/book';
 import { AuthorRepository } from '../repositories/author';
 import { BookRepository } from '../repositories/book';
 import { GenreRepository } from '../repositories/genre';
+import { InteractionRepository } from '../repositories/interaction';
+import { CreateBookDTO, UpdateBookDTO } from '../types/dto';
+import { HttpStatus } from '../types/http_status_type';
 
 const response = new ResponseOn();
 const bookRepository = new BookRepository();
 const genreRepository = new GenreRepository();
 const authorRepository = new AuthorRepository();
+const interactionRepository = new InteractionRepository();
 
 async function getBookInfo(books: BookEntity[]) {
     for (let i = 0; i < books.length; i++) {
@@ -30,22 +34,7 @@ async function getBookInfo(books: BookEntity[]) {
 }
 
 export class BookService {
-    getAll = async () => {
-        try {
-            const books = await bookRepository.getAll();
-
-            if (books.length === 0 || !books) {
-                return response.error('Nenhum livro encontrado', 404);
-            }
-
-            return response.success(books, 200);
-
-        } catch (error) {
-            return response.error(error, 500);
-        }
-    };
-
-    getAllWithCompleteInfo = async () => {
+    getAllWithCompleteInfo = async (page?: number, limit?: number) => {
         try {
             const books = await bookRepository.getAll();
 
@@ -65,7 +54,7 @@ export class BookService {
     getById = async (id: number) => {
         try {
             if (!id) {
-                return response.error('O id é obrigatório', 400);
+                return response.unsuccessfully('O id do livro é obrigatório');
             }
 
             const book = await bookRepository.getById(id);
@@ -80,10 +69,12 @@ export class BookService {
         }
     };
 
-    create = async (title: string, synopsis: string, url_image: string, genre_id: number, author_id: number) => {
+    createWithAuthorAlreadyExists = async (createBookDTO: CreateBookDTO) => {
         try {
-            if (!title || !synopsis || !genre_id) {
-                return response.error('O nome, descrição e o id do gênero são obrigatórios', 400);
+            const { title, synopsis, url_image, genre_id, author_id } = createBookDTO;
+
+            if (!title || !genre_id) {
+                return response.unsuccessfully('O nome e o id do gênero são obrigatórios');
             }
 
             const checkBookExist = await bookRepository.getByTitle(title);
@@ -100,11 +91,17 @@ export class BookService {
         }
     };
 
-    update = async (id: number, title: string, synopsis: string, url_image: string, genre_id: number, author_id: number) => {
+    update = async (id: number, updateBookDTO: UpdateBookDTO) => {
         try {
-            if (!id ) {
-                return response.error('O id do livro é obrigatório', 400);
+            if (!id) {
+                return response.unsuccessfully('O id do livro é obrigatório');
             }
+
+            if (!updateBookDTO) {
+                return response.unsuccessfully('Os dados do livro são obrigatórios');
+            }
+
+            const { title, synopsis, url_image, genre_id, author_id } = updateBookDTO;
 
             const checkBookExist = await bookRepository.getById(id);
 
@@ -123,7 +120,7 @@ export class BookService {
     exclude = async (id: number) => {
         try {
             if (!id) {
-                return response.error('O id é obrigatório', 400);
+                return response.unsuccessfully('O id do livro é obrigatório');
             }
 
             const checkBookExist = await bookRepository.getById(id);
@@ -159,7 +156,70 @@ export class BookService {
         }
     };
 
-    createWithCompleteInfo = async (title: string, synopsis: string, url_image: string, genre_id: number, author: string) => {
+    getByGenreId = async (genre_id: number) => {
+        try {
+            if (!genre_id) {
+                return response.unsuccessfully('O id do gênero é obrigatório');
+            }
+
+            const books = await bookRepository.getByGenreId(genre_id);
+
+            if (!books) {
+                return response.unsuccessfully('Nenhum livro encontrado', HttpStatus.NOT_FOUND);
+            }
+
+            return response.success(books);
+
+        } catch (error) {
+            return response.error(error);
+        }
+    };
+
+    getByAuthorId = async (author_id: number) => {
+        try {
+            if (!author_id) {
+                return response.unsuccessfully('O id do autor é obrigatório');
+            }
+
+            const books = await bookRepository.getByAuthorId(author_id);
+
+            if (!books) {
+                return response.unsuccessfully('Nenhum livro encontrado', HttpStatus.NOT_FOUND);
+            }
+
+            return response.success(books);
+
+        } catch (error) {
+            return response.error(error);
+        }
+    };
+
+    getMostLiked = async () => {
+        try {
+            const booksLiked = await interactionRepository.getBooksLiked();
+
+            if (!booksLiked) {
+                return response.unsuccessfully('Nenhum livro com gostei encontrado', HttpStatus.NOT_FOUND);
+            }
+
+            const countLikes = booksLiked.reduce((acc, interaction) => {
+                acc[interaction.book.id] = (acc[interaction.book.id] || 0) + 1;
+                return acc;
+            });
+    
+            const mostLikedBooks = booksLiked
+                .filter((interaction) => countLikes[interaction.book.id] > 0)
+                .sort((a, b) => countLikes[b.book.id] - countLikes[a.book.id])
+                .slice(0, 5);
+
+            return response.success(mostLikedBooks);
+
+        } catch (error) {
+            return response.error(error);
+        }
+    };
+
+    createWithCompleteInfo = async (title: string, synopsis: string, url_image: string, genre_id: number, authorName: string) => {
         try {
             if (!title || !synopsis || !url_image || !genre_id || !author ) {
                 return response.error('Dados inválidos', 400);

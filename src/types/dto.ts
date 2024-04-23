@@ -46,3 +46,48 @@ export type CreateGenreDTO = {
 export type UpdateGenreDTO = {
     name: string;
 }
+
+export type CreateCollectionDTO = {
+    title: string;
+    description?: string;
+    owner_id: number;
+}
+
+export type UpdateCollectionDTO = {
+    title?: string;
+    description?: string;
+}
+
+export type CreateTagDTO = {
+    name: string;
+}
+
+export type UpdateTagDTO = {
+    name: string;
+}
+
+export type CreateInteractionDTO = {
+   user_id: number;
+   book_id: number;
+   already_read: boolean;
+   want_to_read: boolean;
+   liked: boolean;
+}
+
+export type UpdateInteractionDTO = {
+    already_read?: boolean;
+    want_to_read?: boolean;
+    liked?: boolean;
+}
+
+export type CreateUserBookRateDTO = {
+    user_id: number;
+    book_id: number;
+    rate?: number;
+    comment?: string;
+}
+
+export type UpdateUserBookRateDTO = {
+    rate?: number;
+    comment?: string;
+}

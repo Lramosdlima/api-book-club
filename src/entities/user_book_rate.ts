@@ -12,17 +12,10 @@ import {
 import { BookEntity } from './book';
 import { UserEntity } from './user';
 
-@Entity( 'book_user')
-export class BookUserEntity {
+@Entity( 'user_book_rate')
+export class UserBookRateEntity {
     @PrimaryColumn()
         id: number;
-
-    @Column()
-        book_id: number;
-
-    @ManyToOne(() => BookEntity)
-    @JoinColumn({ name: 'book_id' })
-        book: BookEntity;
 
     @Column()
         user_id: number;
@@ -32,19 +25,17 @@ export class BookUserEntity {
         user: UserEntity;
 
     @Column()
+        book_id: number;
+
+    @ManyToOne(() => BookEntity)
+    @JoinColumn({ name: 'book_id' })
+        book: BookEntity;
+
+    @Column()
         comment: string;
 
     @Column()
         rate: number;
-
-    @Column()
-        already_read: boolean;
-
-    @Column()
-        want_to_read: boolean;
-
-    @Column()
-        liked: boolean;
 
     @CreateDateColumn()
         created_at: Date;
