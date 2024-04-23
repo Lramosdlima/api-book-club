@@ -11,8 +11,8 @@ export class BookRepository {
 
         return await bookRepository.find({
             relations: ['author', 'genre'],
-            skip: (skipNumber - 1) * takeNumber,
             take: takeNumber,
+            skip: (skipNumber - 1) * takeNumber,
         });
     };
 

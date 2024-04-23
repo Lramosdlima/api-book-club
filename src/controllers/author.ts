@@ -4,8 +4,7 @@ const authorService = new AuthorService();
 
 export class AuthorController {
     async getAll(req, res) {
-        const { page, limit } = req.query;
-        const { codehttp, ...rest } = await authorService.getAll(page, limit);
+        const { codehttp, ...rest } = await authorService.getAll();
         return res.status(codehttp).json(rest);
     }
 
