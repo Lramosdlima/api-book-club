@@ -6,12 +6,16 @@ import { GenreRepository } from '../repositories/genre';
 import { InteractionRepository } from '../repositories/interaction';
 import { CreateBookDTO, UpdateBookDTO } from '../types/dto';
 import { HttpStatus } from '../types/http_status_type';
+import NodeCache from 'node-cache';
 
 const response = new ResponseOn();
 const bookRepository = new BookRepository();
 const genreRepository = new GenreRepository();
 const authorRepository = new AuthorRepository();
 const interactionRepository = new InteractionRepository();
+
+const CACHE_LIMIT = Number(process.env.CACHE_LIMIT) || 3600; 
+const dbCache = new NodeCache({ stdTTL: CACHE_LIMIT, checkperiod: 0.2 });
 
 function formatBookInfo(books: BookEntity[]) {
     return books.map((book) => {
@@ -28,6 +32,13 @@ function formatBookInfo(books: BookEntity[]) {
 
 export class BookService {
     getAllWithCompleteInfo = async (page?: number, limit?: number) => {
+        const allBooksCached = `@api-book-club-cache::allBooks${page};${limit}`;
+
+        if (dbCache.has(allBooksCached)) {
+            const cachedResponse = dbCache.get(allBooksCached);
+            return response.success(cachedResponse);
+        }
+
         try {
             const books = await bookRepository.getAllComplete(page, limit);
 
@@ -36,6 +47,8 @@ export class BookService {
             }
 
             const filterBooks = formatBookInfo(books);
+
+            dbCache.set(allBooksCached, filterBooks, CACHE_LIMIT);
 
             return response.success(filterBooks);
 
