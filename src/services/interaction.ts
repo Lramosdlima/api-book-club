@@ -18,6 +18,12 @@ export class InteractionService {
                 return response.unsuccessfully('O id do livro é obrigatório');
             }
 
+            const checkBookExist = await bookRepository.getById(book_id);
+
+            if (!checkBookExist) {
+                return response.unsuccessfully('Livro não foi encontrado', HttpStatus.NOT_FOUND);
+            }
+
             const interactions = await interactionRepository.getAllByBookId(book_id, page, limit);
 
             if (interactions.length === 0 || !interactions) {
@@ -37,6 +43,12 @@ export class InteractionService {
                 return response.unsuccessfully('O id do usuário é obrigatório');
             }
 
+            const checkUserExist = await userRepository.getById(user_id);
+
+            if (!checkUserExist) {
+                return response.unsuccessfully('Usuário não foi encontrado', HttpStatus.NOT_FOUND);
+            }
+
             const interaction = await interactionRepository.getAllByUserId(user_id, page, limit);
 
             if (!interaction) {
@@ -53,6 +65,12 @@ export class InteractionService {
         try {
             if (!user_id) {
                 return response.unsuccessfully('O id do usuário é obrigatório');
+            }
+
+            const checkUserExist = await userRepository.getById(user_id);
+
+            if (!checkUserExist) {
+                return response.unsuccessfully('Usuário não foi encontrado', HttpStatus.NOT_FOUND);
             }
 
             const interaction = await interactionRepository.getEspecificByUserId(user_id, already_read, want_to_read, liked);
