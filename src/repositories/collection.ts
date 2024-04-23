@@ -44,10 +44,10 @@ export class CollectionRepository {
     };
 
     exclude = async (id: number): Promise<void> => {
-        await collectionRepository.delete({ id });
+        await collectionRepository.softDelete({ id });
     };
 
     removeCollectionFromUser = async (id: number): Promise<void> => {
-        await collectionUserAddRepository.delete({ id });
+        await collectionUserAddRepository.softDelete({ id });
     };
 }

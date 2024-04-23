@@ -65,6 +65,6 @@ export class InteractionRepository {
     };
 
     exclude = async (id: number): Promise<void> => {
-        await interactionRepository.delete({ id });
+        await interactionRepository.softDelete({ id });
     };
 }
