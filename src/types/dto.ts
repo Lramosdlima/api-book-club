@@ -32,11 +32,13 @@ export type UpdateBookDTO = {
 export type CreateAuthorDTO = {
     name: string;
     description?: string;
+    photo?: string;
 }
 
 export type UpdateAuthorDTO = {
     name: string;
     description?: string;
+    photo?: string;
 }
 
 export type CreateGenreDTO = {

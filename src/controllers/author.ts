@@ -16,15 +16,15 @@ export class AuthorController {
     }
 
     async create(req, res) {
-        const { name, description } = req.body;
-        const { codehttp, ...rest } = await authorService.create(name, description);
+        const { name, description, photo } = req.body;
+        const { codehttp, ...rest } = await authorService.create(name, description, photo);
         return res.status(codehttp).json(rest);
     }
 
     async update(req, res) {
         const { id } = req.params;
-        const { name, description } = req.body;
-        const { codehttp, ...rest } = await authorService.update(id, name, description);
+        const { name, description, photo } = req.body;
+        const { codehttp, ...rest } = await authorService.update(id, name, description, photo);
         return res.status(codehttp).json(rest);
     }
 
