@@ -8,7 +8,7 @@ const router = Router();
 const bookController = new BookController();
 const middleware = new Middleware();
 
-router.get('/all/complete', bookController.getAllWithCompleteInfo); // Todas as informações completas dos livros
+router.get('/all', bookController.getAllWithCompleteInfo); // Todas as informações completas dos livros
 router.get('/:id', bookController.getById); // Busca livro específico
 router.get('/search/with/title', bookController.getByTitle); // Busca livro pelo seu título
 router.get('/search/with/genre', bookController.getByGenreId); // Busca livro pelo seu genero
