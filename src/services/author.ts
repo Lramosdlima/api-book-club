@@ -1,10 +1,12 @@
 import { APIResponse, ErrorTypes, ResponseOn } from '../config/utils/response';
 import { AuthorEntity } from '../entities/author';
 import { AuthorRepository } from '../repositories/author';
+import { BookRepository } from '../repositories/book';
 import { HttpStatus } from '../types/http_status_type';
 
 const response = new ResponseOn();
 const authorRepository = new AuthorRepository();
+const bookRepository = new BookRepository();
 
 export class AuthorService {
     getAll = async (page?: number, limit?: number): Promise<APIResponse<AuthorEntity[] | string, ErrorTypes>> => {
@@ -40,7 +42,7 @@ export class AuthorService {
         }
     };
 
-    create = async (name: string, description: string): Promise<APIResponse<string, ErrorTypes>> => {
+    create = async (name: string, description: string, photo: string): Promise<APIResponse<string, ErrorTypes>> => {
         try {
             if (!name || !description) {
                 return response.unsuccessfully('O nome e a descrição são obrigatórios');
@@ -52,7 +54,7 @@ export class AuthorService {
                 return response.unsuccessfully('O autor já existe');
             }
 
-            await authorRepository.create({ name, description });
+            await authorRepository.create({ name, description, photo });
 
             return response.success('Autor foi criado com sucesso', HttpStatus.CREATED);
         } catch (error) {
@@ -60,7 +62,7 @@ export class AuthorService {
         }
     };
 
-    update = async (id: number, name: string, description: string): Promise<APIResponse<string, ErrorTypes>> => {
+    update = async (id: number, name: string, description: string, photo: string): Promise<APIResponse<string, ErrorTypes>> => {
         try {
             if (!id || !name || !description) {
                 return response.unsuccessfully('O id, o nome e a descrição são obrigatórios');
@@ -72,7 +74,7 @@ export class AuthorService {
                 return response.unsuccessfully(`Autor de id ${id} não encontrado`, HttpStatus.NOT_FOUND);
             }
         
-            await authorRepository.update(id, { name, description });
+            await authorRepository.update(id, { name, description, photo });
 
             return response.success('Autor foi atualizado com sucesso');
         } catch (error) {
@@ -90,6 +92,12 @@ export class AuthorService {
 
             if (!checkAuthorExist) {
                 return response.unsuccessfully(`Autor de id ${id} não encontrado`, HttpStatus.NOT_FOUND);
+            }
+
+            const checkBooksWithAuthorExist = await bookRepository.getByAuthorId(id);
+
+            if (checkBooksWithAuthorExist.length > 0) {
+                return response.unsuccessfully('Não pode excluir o autor, pois ele possui livros vinculados', HttpStatus.BAD_REQUEST);
             }
 
             await authorRepository.exclude(id);

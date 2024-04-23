@@ -43,9 +43,9 @@ export class InteractionEntity {
     @CreateDateColumn()
         created_at: Date;
 
-    @UpdateDateColumn()
+    @UpdateDateColumn({ select: false })
         updated_at: Date;
 
-    @DeleteDateColumn()
+    @DeleteDateColumn({ select: false })
         deleted_at: Date;
 }
