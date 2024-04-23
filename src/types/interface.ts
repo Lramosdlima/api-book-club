@@ -10,3 +10,8 @@ export interface ILoginResponse {
     },
     accessToken: string
 }
+
+export enum RoleEnum {
+    ADMIN = 1,
+    USER = 2
+}
