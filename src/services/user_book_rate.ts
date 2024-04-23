@@ -124,7 +124,7 @@ export class UserBookRateService {
             const checkTagExist = await userBookRateRepository.getById(id);
 
             if (!checkTagExist) {
-                response.unsuccessfully(`Avaliação de id ${id} não encontrada`, HttpStatus.NOT_FOUND);
+                return response.unsuccessfully(`Avaliação de id ${id} não encontrada`, HttpStatus.NOT_FOUND);
             }
 
             await userBookRateRepository.exclude(id);

@@ -152,7 +152,7 @@ export class CollectionService {
             const checkCollectionExist = await collectionRepository.getById(id);
 
             if (!checkCollectionExist) {
-                response.unsuccessfully(`Coleção de id ${id} não encontrada`, HttpStatus.NOT_FOUND);
+                return response.unsuccessfully(`Coleção de id ${id} não encontrada`, HttpStatus.NOT_FOUND);
             }
 
             await collectionRepository.exclude(id);

@@ -119,7 +119,7 @@ export class BookService {
             const checkBookExist = await bookRepository.getById(id);
 
             if (!checkBookExist) {
-                response.unsuccessfully(`Livro de id ${id} não encontrado`, HttpStatus.NOT_FOUND);
+                return response.unsuccessfully(`Livro de id ${id} não encontrado`, HttpStatus.NOT_FOUND);
             }
 
             await bookRepository.exclude(id);
