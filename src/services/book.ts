@@ -13,21 +13,14 @@ const genreRepository = new GenreRepository();
 const authorRepository = new AuthorRepository();
 const interactionRepository = new InteractionRepository();
 
-async function getBookInfo(books: BookEntity[]) {
-    for (let i = 0; i < books.length; i++) {
-        const genre = await genreRepository.getById(books[i].genre_id);
-        books[i].genre = genre;
-        const authorBook = await authorRepository.getById(books[i].id);
-        books[i].author = authorBook;
-    }
-
+function formatBookInfo(books: BookEntity[]) {
     return books.map((book) => {
         return {
             id: book.id,
             title: book.title,
             synopsis: book.synopsis,
-            genre: book.genre,
             imageUrl: book.url_image,
+            genre: book.genre,
             author: book.author,
         };
     });
@@ -36,18 +29,18 @@ async function getBookInfo(books: BookEntity[]) {
 export class BookService {
     getAllWithCompleteInfo = async (page?: number, limit?: number) => {
         try {
-            const books = await bookRepository.getAll();
+            const books = await bookRepository.getAllComplete(page, limit);
 
             if (books.length === 0 || !books) {
-                return response.error('Nenhum livro encontrado', 404);
+                return response.unsuccessfully('Nenhum livro encontrado', HttpStatus.NOT_FOUND);
             }
 
-            const filterBooks = await getBookInfo(books);
+            const filterBooks = formatBookInfo(books);
 
-            return response.success(filterBooks, 200);
+            return response.success(filterBooks);
 
         } catch (error) {
-            return response.error(error, 500);
+            return response.error(error);
         }
     };
 
@@ -60,12 +53,12 @@ export class BookService {
             const book = await bookRepository.getById(id);
 
             if (!book) {
-                return response.error(`Livro de id ${id} não encontrado`, 404);
+                return response.unsuccessfully(`Livro de id ${id} não encontrado`, HttpStatus.NOT_FOUND);
             }
 
-            return response.success(book, 200);
+            return response.success(book);
         } catch (error) {
-            return response.error(error, 500);
+            return response.error(error);
         }
     };
 
@@ -77,17 +70,17 @@ export class BookService {
                 return response.unsuccessfully('O nome e o id do gênero são obrigatórios');
             }
 
-            const checkBookExist = await bookRepository.getByTitle(title);
+            const checkBookAlreadyExist = await bookRepository.getByTitle(title);
 
-            if (!checkBookExist) {
-                return response.error('O livro já existe', 400);
+            if (checkBookAlreadyExist) {
+                return response.unsuccessfully('O livro já existe');
             }
 
             await bookRepository.create({ title, synopsis, url_image, genre_id, author_id });
 
-            return response.success('Livro foi criado com sucesso', 201);
+            return response.success('Livro foi criado com sucesso', HttpStatus.CREATED);
         } catch (error) {
-            return response.error(error, 500);
+            return response.error(error);
         }
     };
 
@@ -106,14 +99,14 @@ export class BookService {
             const checkBookExist = await bookRepository.getById(id);
 
             if (!checkBookExist) {
-                return response.error(`Livro de id ${id} não encontrado`, 404);
+                return response.unsuccessfully(`Livro de id ${id} não encontrado`, HttpStatus.NOT_FOUND);
             }
         
             await bookRepository.update(id, { title, synopsis, url_image, genre_id, author_id });
 
-            return response.success('Livro foi atualizado com sucesso', 200);
+            return response.success('Livro foi atualizado com sucesso');
         } catch (error) {
-            return response.error(error, 500);
+            return response.error(error);
         }
     };
 
@@ -126,33 +119,33 @@ export class BookService {
             const checkBookExist = await bookRepository.getById(id);
 
             if (!checkBookExist) {
-                response.error(`Livro de id ${id} não encontrado`, 404);
+                response.unsuccessfully(`Livro de id ${id} não encontrado`, HttpStatus.NOT_FOUND);
             }
 
             await bookRepository.exclude(id);
 
-            return response.success('Livro foi excluído com sucesso', 200);
+            return response.success('Livro foi excluído com sucesso');
         } catch (error) {
-            return response.error(error, 500);
+            return response.error(error);
         }
     };
 
     getByTitle = async (title: string) => {
         try {
             if (!title) {
-                return response.error('O título é obrigatório', 400);
+                return response.unsuccessfully('O título é obrigatório');
             }
 
             const book = await bookRepository.getByTitle(title);
 
             if (!book) {
-                return response.error(`Livro de título ${title} não encontrado`, 404);
+                return response.unsuccessfully(`Livro de título ${title} não encontrado`, HttpStatus.NOT_FOUND);
             }
 
-            return response.success(book, 200);
+            return response.success(book);
 
         } catch (error) {
-            return response.error(error, 500);
+            return response.error(error);
         }
     };
 
@@ -221,33 +214,36 @@ export class BookService {
 
     createWithCompleteInfo = async (title: string, synopsis: string, url_image: string, genre_id: number, authorName: string) => {
         try {
-            if (!title || !synopsis || !url_image || !genre_id || !author ) {
-                return response.error('Dados inválidos', 400);
+            if (!title || !synopsis || !url_image || !genre_id || !authorName ) {
+                return response.unsuccessfully('Dados inválidos');
             }
 
-            const checkBookExist = await bookRepository.getByTitle(title);
+            const checkBookAlreadyExist = await bookRepository.getByTitle(title);
 
-            if (!checkBookExist) {
-                return response.error('O livro já existe', 400);
+            if (checkBookAlreadyExist) {
+                return response.unsuccessfully('O livro já existe');
             }
 
             const checkGenreExist = await genreRepository.getById(genre_id);
 
             if (!checkGenreExist) {
-                return response.error('O gênero não existe', 400);
+                return response.unsuccessfully('O gênero não existe');
             }
 
-            const authorExist = await authorRepository.getByName(author);
+            const checkAuthorAlreadyExist = await authorRepository.getByName(authorName);
 
-            if (!authorExist) {
-                return response.error('O autor não existe', 400);
+            if (checkAuthorAlreadyExist) {
+                await bookRepository.create({ title, synopsis, genre_id, url_image, author_id: checkAuthorAlreadyExist.id });
+
+                return response.success('Livro com autor existente foi criado com sucesso', HttpStatus.CREATED);
             }
 
-            await bookRepository.create({ title, synopsis, genre_id, url_image, author_id: authorExist.id });
+            const newAuthor = await authorRepository.create({ name: authorName });
+            await bookRepository.create({ title, synopsis, genre_id, url_image, author_id: newAuthor.id });
 
-            return response.success('Livro foi criado com sucesso', 201);
+            return response.success('Livro foi criado com sucesso', HttpStatus.CREATED);
         } catch (error) {
-            return response.error(error, 500);
+            return response.error(error);
         }
     };
 }
