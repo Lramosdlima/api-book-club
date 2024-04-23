@@ -32,6 +32,6 @@ export class AuthorRepository {
     };
 
     exclude = async (id: number): Promise<void> => {
-        await authorRepository.delete({ id });
+        await authorRepository.softDelete({ id });
     };
 }

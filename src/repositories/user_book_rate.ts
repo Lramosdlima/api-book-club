@@ -40,6 +40,6 @@ export class UserBookRateRepository {
     };
 
     exclude = async (id: number): Promise<void> => {
-        await userBookRateRepository.delete({ id });
+        await userBookRateRepository.softDelete({ id });
     };
 }

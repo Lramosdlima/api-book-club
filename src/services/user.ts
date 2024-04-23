@@ -69,7 +69,7 @@ export class UserService {
             const checkUserExist = await userRepository.getById(id);
 
             if (!checkUserExist) {
-                response.unsuccessfully(`Usuário de id ${id} não encontrado`, HttpStatus.NOT_FOUND);
+                return response.unsuccessfully(`Usuário de id ${id} não encontrado`, HttpStatus.NOT_FOUND);
             }
 
             await userRepository.exclude(id);

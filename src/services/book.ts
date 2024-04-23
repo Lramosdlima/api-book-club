@@ -66,8 +66,8 @@ export class BookService {
         try {
             const { title, synopsis, url_image, genre_id, author_id } = createBookDTO;
 
-            if (!title || !genre_id) {
-                return response.unsuccessfully('O nome e o id do gênero são obrigatórios');
+            if (!title || !genre_id || !author_id) {
+                return response.unsuccessfully('O nome do livro, o id do gênero e o id do autor são obrigatórios');
             }
 
             const checkBookAlreadyExist = await bookRepository.getByTitle(title);
@@ -119,7 +119,7 @@ export class BookService {
             const checkBookExist = await bookRepository.getById(id);
 
             if (!checkBookExist) {
-                response.unsuccessfully(`Livro de id ${id} não encontrado`, HttpStatus.NOT_FOUND);
+                return response.unsuccessfully(`Livro de id ${id} não encontrado`, HttpStatus.NOT_FOUND);
             }
 
             await bookRepository.exclude(id);
@@ -214,8 +214,8 @@ export class BookService {
 
     createWithCompleteInfo = async (title: string, synopsis: string, url_image: string, genre_id: number, authorName: string) => {
         try {
-            if (!title || !synopsis || !url_image || !genre_id || !authorName ) {
-                return response.unsuccessfully('Dados inválidos');
+            if (!title || !genre_id || !authorName ) {
+                return response.unsuccessfully('O título do livro, id do gênero e o nome do autor são obrigatórios');
             }
 
             const checkBookAlreadyExist = await bookRepository.getByTitle(title);

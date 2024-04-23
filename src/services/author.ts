@@ -89,7 +89,7 @@ export class AuthorService {
             const checkAuthorExist = await authorRepository.getById(id);
 
             if (!checkAuthorExist) {
-                response.unsuccessfully(`Autor de id ${id} não encontrado`, HttpStatus.NOT_FOUND);
+                return response.unsuccessfully(`Autor de id ${id} não encontrado`, HttpStatus.NOT_FOUND);
             }
 
             await authorRepository.exclude(id);

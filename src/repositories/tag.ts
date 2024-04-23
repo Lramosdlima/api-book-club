@@ -32,6 +32,6 @@ export class TagRepository {
     };
 
     exclude = async (id: number): Promise<void> => {
-        await tagRepository.delete({ id });
+        await tagRepository.softDelete({ id });
     };
 }

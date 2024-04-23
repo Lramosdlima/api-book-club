@@ -32,6 +32,6 @@ export class GenreRepository {
     };
 
     exclude = async (id: number): Promise<void> => {
-        await genreRepository.delete({ id });
+        await genreRepository.softDelete({ id });
     };
 }

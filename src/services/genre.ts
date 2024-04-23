@@ -89,7 +89,7 @@ export class GenreService {
             const checkGenreExist = await genreRepository.getById(id);
 
             if (!checkGenreExist) {
-                response.unsuccessfully(`Gênero de id ${id} não encontrado`, HttpStatus.NOT_FOUND);
+                return response.unsuccessfully(`Gênero de id ${id} não encontrado`, HttpStatus.NOT_FOUND);
             }
 
             await genreRepository.exclude(id);

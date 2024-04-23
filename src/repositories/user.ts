@@ -36,6 +36,6 @@ export class UserRepository {
     };
 
     exclude = async (id: number): Promise<void> => {
-        await userRepository.delete({ id });
+        await userRepository.softDelete({ id });
     };
 }

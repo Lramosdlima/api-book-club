@@ -83,7 +83,7 @@ export class TagService {
             const checkTagExist = await tagRepository.getById(id);
 
             if (!checkTagExist) {
-                response.unsuccessfully(`Tag de id ${id} não encontrada`, HttpStatus.NOT_FOUND);
+                return response.unsuccessfully(`Tag de id ${id} não encontrada`, HttpStatus.NOT_FOUND);
             }
 
             await tagRepository.exclude(id);
