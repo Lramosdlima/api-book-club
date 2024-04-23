@@ -20,6 +20,5 @@ app.get('/', (req, res) => {
     res.json({
         message: 'API Book Club',
         time: new Date().toString(),
-        path: __dirname,
     });
 });

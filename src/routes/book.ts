@@ -15,6 +15,7 @@ router.get('/search/with/genre', bookController.getByGenreId); // Busca livro pe
 router.get('/search/with/author', bookController.getByAuthorId); // Busca livro pelo seu autor
 router.get('/all/most/liked', bookController.getMostLiked); // Busca livro com mais likes
 
+
 router.post('/create/complete', middleware.auth, bookController.createWithCompleteInfo); // Cria livro e adiciona um novo autor
 router.post('/create/with/author', middleware.auth, bookController.createWithAuthorAlreadyExists); // Cria livro com autor já existente
 
