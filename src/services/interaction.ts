@@ -1,11 +1,15 @@
 import { APIResponse, ErrorTypes, ResponseOn } from '../config/utils/response';
 import { InteractionEntity } from '../entities/interaction';
+import { BookRepository } from '../repositories/book';
 import { InteractionRepository } from '../repositories/interaction';
+import { UserRepository } from '../repositories/user';
 import { CreateInteractionDTO, UpdateInteractionDTO } from '../types/dto';
 import { HttpStatus } from '../types/http_status_type';
 
 const response = new ResponseOn();
 const interactionRepository = new InteractionRepository();
+const userRepository = new UserRepository();
+const bookRepository = new BookRepository();
 
 export class InteractionService {
     getAllInteractionsByBookId = async (book_id: number, page?: number, limit?: number): Promise<APIResponse<InteractionEntity[], ErrorTypes>> => {
@@ -70,6 +74,18 @@ export class InteractionService {
 
             if (!user_id || !book_id) {
                 return response.unsuccessfully('O id do usuário e do livro são obrigatórios');
+            }
+
+            const checkUserExist = await userRepository.getById(user_id);
+
+            if (!checkUserExist) {
+                return response.unsuccessfully('Usuário não foi encontrado', HttpStatus.NOT_FOUND);
+            }
+
+            const checkBookExist = await bookRepository.getById(book_id);
+
+            if (!checkBookExist) {
+                return response.unsuccessfully('O livro não foi encontrado', HttpStatus.NOT_FOUND);
             }
 
             const checkInteractionExist = await interactionRepository.getByUserIdAndBookId(user_id, book_id);

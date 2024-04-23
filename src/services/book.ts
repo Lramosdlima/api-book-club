@@ -204,7 +204,7 @@ export class BookService {
         try {
             const booksLiked = await interactionRepository.getBooksLiked();
 
-            if (!booksLiked) {
+            if (!booksLiked || booksLiked.length === 0) {
                 return response.unsuccessfully('Nenhum livro com gostei encontrado', HttpStatus.NOT_FOUND);
             }
 
