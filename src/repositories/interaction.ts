@@ -52,7 +52,7 @@ export class InteractionRepository {
         return await interactionRepository.find({
             select: ['book', 'liked'],
             where: { liked: true },
-            relations: ['book'],
+            relations: ['book', 'book.author', 'book.genre'],
         });
     };
 
