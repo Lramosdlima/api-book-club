@@ -10,13 +10,13 @@ const userBookRateRepository = new UserBookRateRepository();
 export class UserBookRateService {
     getAll = async (page?: number, limit?: number): Promise<APIResponse<UserBookRateEntity[], ErrorTypes>> => {
         try {
-            const tags = await userBookRateRepository.getAll(page, limit);
+            const rate = await userBookRateRepository.getAll(page, limit);
 
-            if (tags.length === 0 || !tags) {
+            if (rate.length === 0 || !rate) {
                 return response.unsuccessfully('Nenhuma avaliação encontrada', HttpStatus.NOT_FOUND);
             }
 
-            return response.success(tags);
+            return response.success(rate);
 
         } catch (error) {
             return response.error(error);
