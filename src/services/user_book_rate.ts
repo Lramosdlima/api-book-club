@@ -1,3 +1,4 @@
+import NodeCache from 'node-cache';
 import { APIResponse, ErrorTypes, ResponseOn } from '../config/utils/response';
 import { UserBookRateEntity } from '../entities/user_book_rate';
 import { UserBookRateRepository } from '../repositories/user_book_rate';
@@ -6,6 +7,9 @@ import { HttpStatus } from '../types/http_status_type';
 
 const response = new ResponseOn();
 const userBookRateRepository = new UserBookRateRepository();
+
+const CACHE_LIMIT = Number(process.env.CACHE_LIMIT) || 3600; 
+const dbCache = new NodeCache({ stdTTL: CACHE_LIMIT, checkperiod: 0.2 });
 
 export class UserBookRateService {
     getAll = async (page?: number, limit?: number): Promise<APIResponse<UserBookRateEntity[], ErrorTypes>> => {
@@ -43,6 +47,14 @@ export class UserBookRateService {
 
     getAllByBookId = async (book_id: number): Promise<APIResponse<UserBookRateEntity[] | null, ErrorTypes>> => {
         try {
+            const allRateCached = `@api-book-club-cache::allCollections${book_id}`;
+
+            if (dbCache.has(allRateCached)) {
+                const cachedResponse: UserBookRateEntity[] = dbCache.get(allRateCached);
+                return response.success(cachedResponse);
+            }
+
+
             if (!book_id) {
                 return response.unsuccessfully('O id do Livro é obrigatório');
             }
@@ -52,6 +64,8 @@ export class UserBookRateService {
             if (!rate) {
                 return response.unsuccessfully(`Avaliação do Livro de id ${book_id} não encontrada`, HttpStatus.NOT_FOUND);
             }
+
+            dbCache.set(allRateCached, rate, CACHE_LIMIT);
 
             return response.success(rate);
 
