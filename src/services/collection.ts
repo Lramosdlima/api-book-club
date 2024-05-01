@@ -1,3 +1,5 @@
+import NodeCache from 'node-cache';
+
 import { APIResponse, ErrorTypes, ResponseOn } from '../config/utils/response';
 import { CollectionEntity } from '../entities/collection';
 import { CollectionRepository } from '../repositories/collection';
@@ -6,14 +8,26 @@ import { HttpStatus } from '../types/http_status_type';
 const response = new ResponseOn();
 const collectionRepository = new CollectionRepository();
 
+const CACHE_LIMIT = Number(process.env.CACHE_LIMIT) || 3600; 
+const dbCache = new NodeCache({ stdTTL: CACHE_LIMIT, checkperiod: 0.2 });
+
 export class CollectionService {
     getAll = async (page?: number, limit?: number): Promise<APIResponse<CollectionEntity[], ErrorTypes>> => {
         try {
+            const allCollectionsCached = `@api-book-club-cache::allCollections${page};${limit}`;
+
+            if (dbCache.has(allCollectionsCached)) {
+                const cachedResponse: CollectionEntity[] = dbCache.get(allCollectionsCached);
+                return response.success(cachedResponse);
+            }
+
             const collections = await collectionRepository.getAll(page, limit);
 
             if (collections.length === 0 || !collections) {
                 return response.unsuccessfully('Nenhuma coleção encontrado', HttpStatus.NOT_FOUND);
             }
+
+            dbCache.set(allCollectionsCached, collections, CACHE_LIMIT);
 
             return response.success(collections);
 

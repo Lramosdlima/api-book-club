@@ -201,10 +201,17 @@ export class BookService {
     };
 
     getMostLiked = async () => {
+        const mostLikedCached = '@api-book-club-cache::mostLikedBooks';
+
+        if (dbCache.has(mostLikedCached)) {
+            const cachedResponse = dbCache.get(mostLikedCached);
+            return response.success(cachedResponse);
+        }
+
         try {
             const booksLiked = await interactionRepository.getBooksLiked();
 
-            if (!booksLiked) {
+            if (!booksLiked || booksLiked.length === 0) {
                 return response.unsuccessfully('Nenhum livro com gostei encontrado', HttpStatus.NOT_FOUND);
             }
 
@@ -213,12 +220,23 @@ export class BookService {
                 return acc;
             });
     
-            const mostLikedBooks = booksLiked
-                .filter((interaction) => countLikes[interaction.book.id] > 0)
-                .sort((a, b) => countLikes[b.book.id] - countLikes[a.book.id])
-                .slice(0, 5);
+            const mostLikedBooks = booksLiked.filter((interaction) => countLikes[interaction.book.id] > 0);
 
-            return response.success(mostLikedBooks);
+            const orderedBooks = mostLikedBooks.sort((a, b) => countLikes[b.book.id] - countLikes[a.book.id]);
+            
+            const mostLikedBooksFiltered = orderedBooks.slice(0, 5);
+            
+            const booksFormateds = mostLikedBooksFiltered.map((bookInteraction) => {
+                return formatBookInfo([bookInteraction.book]);
+            });
+
+            const finalResponse = booksFormateds.flatMap((book) => {
+                return book;
+            });
+
+            dbCache.set(mostLikedCached, finalResponse, CACHE_LIMIT);
+
+            return response.success(finalResponse);
 
         } catch (error) {
             return response.error(error);

@@ -1,17 +1,27 @@
 import { APIResponse, ErrorTypes, ResponseOn } from '../config/utils/response';
 import { InteractionEntity } from '../entities/interaction';
+import { BookRepository } from '../repositories/book';
 import { InteractionRepository } from '../repositories/interaction';
+import { UserRepository } from '../repositories/user';
 import { CreateInteractionDTO, UpdateInteractionDTO } from '../types/dto';
 import { HttpStatus } from '../types/http_status_type';
 
 const response = new ResponseOn();
 const interactionRepository = new InteractionRepository();
+const userRepository = new UserRepository();
+const bookRepository = new BookRepository();
 
 export class InteractionService {
     getAllInteractionsByBookId = async (book_id: number, page?: number, limit?: number): Promise<APIResponse<InteractionEntity[], ErrorTypes>> => {
         try {
             if (!book_id) {
                 return response.unsuccessfully('O id do livro é obrigatório');
+            }
+
+            const checkBookExist = await bookRepository.getById(book_id);
+
+            if (!checkBookExist) {
+                return response.unsuccessfully('Livro não foi encontrado', HttpStatus.NOT_FOUND);
             }
 
             const interactions = await interactionRepository.getAllByBookId(book_id, page, limit);
@@ -33,6 +43,12 @@ export class InteractionService {
                 return response.unsuccessfully('O id do usuário é obrigatório');
             }
 
+            const checkUserExist = await userRepository.getById(user_id);
+
+            if (!checkUserExist) {
+                return response.unsuccessfully('Usuário não foi encontrado', HttpStatus.NOT_FOUND);
+            }
+
             const interaction = await interactionRepository.getAllByUserId(user_id, page, limit);
 
             if (!interaction) {
@@ -49,6 +65,12 @@ export class InteractionService {
         try {
             if (!user_id) {
                 return response.unsuccessfully('O id do usuário é obrigatório');
+            }
+
+            const checkUserExist = await userRepository.getById(user_id);
+
+            if (!checkUserExist) {
+                return response.unsuccessfully('Usuário não foi encontrado', HttpStatus.NOT_FOUND);
             }
 
             const interaction = await interactionRepository.getEspecificByUserId(user_id, already_read, want_to_read, liked);
@@ -70,6 +92,18 @@ export class InteractionService {
 
             if (!user_id || !book_id) {
                 return response.unsuccessfully('O id do usuário e do livro são obrigatórios');
+            }
+
+            const checkUserExist = await userRepository.getById(user_id);
+
+            if (!checkUserExist) {
+                return response.unsuccessfully('Usuário não foi encontrado', HttpStatus.NOT_FOUND);
+            }
+
+            const checkBookExist = await bookRepository.getById(book_id);
+
+            if (!checkBookExist) {
+                return response.unsuccessfully('O livro não foi encontrado', HttpStatus.NOT_FOUND);
             }
 
             const checkInteractionExist = await interactionRepository.getByUserIdAndBookId(user_id, book_id);
