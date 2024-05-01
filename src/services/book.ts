@@ -226,8 +226,12 @@ export class BookService {
             
             const mostLikedBooksFiltered = orderedBooks.slice(0, 5);
             
-            const finalResponse = mostLikedBooksFiltered.map((bookInteraction) => {
+            const booksFormateds = mostLikedBooksFiltered.map((bookInteraction) => {
                 return formatBookInfo([bookInteraction.book]);
+            });
+
+            const finalResponse = booksFormateds.flatMap((book) => {
+                return book;
             });
 
             dbCache.set(mostLikedCached, finalResponse, CACHE_LIMIT);
