@@ -19,9 +19,20 @@ const userBookRateRepository = new UserBookRateRepository();
 const CACHE_LIMIT = Number(process.env.CACHE_LIMIT) || 3600; 
 const dbCache = new NodeCache({ stdTTL: CACHE_LIMIT, checkperiod: 0.2 });
 
+function calculateMedia(numbers: number[]): number {
+    if (numbers.length === 0) return 0;
+    
+    const sum = numbers.reduce((total, atual) => total + atual, 0);
+    
+    const media = sum / numbers.length;
+    
+    return media;
+}
+
 async function formatBookInfo(books: BookEntity[]) {
     const formatedBooks = books.map(async (book) => {
-        const rates = (await userBookRateRepository.getAllByBookId(book.id)).length;
+        const userBookRates = await userBookRateRepository.getAllByBookId(book.id);
+        const rates = userBookRates.map(rate => rate.rate).filter(rate => rate !== null);
 
         return {
             id: book.id,
@@ -30,7 +41,7 @@ async function formatBookInfo(books: BookEntity[]) {
             url_image: book.url_image,
             genre: book.genre,
             author: book.author,
-            rate: rates,
+            rate: calculateMedia(rates),
         };
     });
     return await Promise.all(formatedBooks);
