@@ -2,6 +2,7 @@ import NodeCache from 'node-cache';
 
 import { APIResponse, ErrorTypes, ResponseOn } from '../config/utils/response';
 import { CollectionEntity } from '../entities/collection';
+import { CollectionBookEntity } from '../entities/collection_book';
 import { CollectionRepository } from '../repositories/collection';
 import { HttpStatus } from '../types/http_status_type';
 
@@ -12,20 +13,34 @@ const CACHE_LIMIT = Number(process.env.CACHE_LIMIT) || 3600;
 const dbCache = new NodeCache({ stdTTL: CACHE_LIMIT, checkperiod: 0.2 });
 
 export class CollectionService {
-    getAll = async (page?: number, limit?: number): Promise<APIResponse<CollectionEntity[], ErrorTypes>> => {
+    getAll = async (page?: number, limit?: number): Promise<APIResponse<any, ErrorTypes>> => {
         try {
             const allCollectionsCached = `@api-book-club-cache::allCollections${page};${limit}`;
 
             if (dbCache.has(allCollectionsCached)) {
-                const cachedResponse: CollectionEntity[] = dbCache.get(allCollectionsCached);
+                const cachedResponse = dbCache.get(allCollectionsCached);
                 return response.success(cachedResponse);
             }
 
-            const collections = await collectionRepository.getAll(page, limit);
+            const collectionsWithBooks = await collectionRepository.getAll(page, limit);
 
-            if (collections.length === 0 || !collections) {
+            if (collectionsWithBooks.length === 0 || !collectionsWithBooks) {
                 return response.unsuccessfully('Nenhuma coleção encontrado', HttpStatus.NOT_FOUND);
             }
+            
+
+            const collections = collectionsWithBooks.map(collection => {
+                return {
+                    ...collection.collection,
+                    books: []
+                };
+            }).filter((collection, index, self) => {
+                return index === self.findIndex(c => c.id === collection.id);
+            });
+
+            collectionsWithBooks.forEach(collWithBooks => {
+                collections.find(coll => coll.id === collWithBooks.collection.id).books.push(collWithBooks.book);
+            });
 
             dbCache.set(allCollectionsCached, collections, CACHE_LIMIT);
 
@@ -54,7 +69,7 @@ export class CollectionService {
         }
     };
 
-    getAllByOwnerId = async (owner_id: number): Promise<APIResponse<CollectionEntity[] | null, ErrorTypes>> => {
+    getAllByOwnerId = async (owner_id: number): Promise<APIResponse<CollectionBookEntity[] | null, ErrorTypes>> => {
         try {
             if (!owner_id) {
                 return response.unsuccessfully('O id é obrigatório');
