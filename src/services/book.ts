@@ -27,7 +27,7 @@ async function formatBookInfo(books: BookEntity[]) {
             id: book.id,
             title: book.title,
             synopsis: book.synopsis,
-            imageUrl: book.url_image,
+            url_image: book.url_image,
             genre: book.genre,
             author: book.author,
             rate: rates,
