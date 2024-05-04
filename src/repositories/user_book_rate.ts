@@ -31,6 +31,10 @@ export class UserBookRateRepository {
         });
     };
 
+    getByUserIdAndBookId = async (user_id: number, book_id: number): Promise<UserBookRateEntity> => {
+        return await userBookRateRepository.findOneBy({ user_id, book_id });
+    };
+
     create = async (createUserBookRateDTO: CreateUserBookRateDTO): Promise<UserBookRateEntity> => {
         return await userBookRateRepository.save(createUserBookRateDTO);
     };
