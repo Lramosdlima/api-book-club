@@ -101,6 +101,12 @@ export class UserBookRateService {
                 return response.unsuccessfully('O id do usuário e do Livro são obrigatórios');
             }
 
+            const checkRateExist = await userBookRateRepository.getByUserIdAndBookId(user_id, book_id);
+
+            if (checkRateExist) {
+                return response.unsuccessfully('Avaliação já foi criada para este Livro', HttpStatus.CONFLICT);
+            }
+
             await userBookRateRepository.create(createUserBookRateDTO);
 
             return response.success('Avaliação foi criada com sucesso', HttpStatus.CREATED);

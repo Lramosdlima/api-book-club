@@ -9,13 +9,14 @@ const collectionUserAddRepository = AppDataSource.getRepository(CollectionUserAd
 const collectionBookRepository = AppDataSource.getRepository(CollectionBookEntity);
 
 export class CollectionRepository {
-    getAll = async (page?: number, limit?: number): Promise<CollectionEntity[]> => {
+    getAll = async (page?: number, limit?: number): Promise<CollectionBookEntity[]> => {
         const skipNumber = page || 1;
         const takeNumber = limit || 20;
 
-        return await collectionRepository.find({
+        return await collectionBookRepository.find({
             skip: (skipNumber - 1) * takeNumber,
             take: takeNumber,
+            relations: ['collection', 'book'],
         });
     };
 
@@ -23,8 +24,17 @@ export class CollectionRepository {
         return await collectionRepository.findOneBy({ id });
     };
 
-    getAllByOwnerId = async (owner_id: number): Promise<CollectionEntity[]> => {
-        return await collectionRepository.find({ where: { owner_id } });
+    getByTitle = async (title: string): Promise<CollectionEntity | null> => {
+        return await collectionRepository.findOneBy({ title });
+    };
+
+    getAllByOwnerId = async (owner_id: number): Promise<CollectionBookEntity[]> => {
+        return await collectionBookRepository.find({ 
+            where: {
+                collection: { owner_id },
+            },
+            relations: ['collection', 'book']
+        });
     };
 
     addCollectionToUser = async (collection_id: number, user_id: number): Promise<CollectionUserAddEntity> => {

@@ -12,20 +12,33 @@ const CACHE_LIMIT = Number(process.env.CACHE_LIMIT) || 3600;
 const dbCache = new NodeCache({ stdTTL: CACHE_LIMIT, checkperiod: 0.2 });
 
 export class CollectionService {
-    getAll = async (page?: number, limit?: number): Promise<APIResponse<CollectionEntity[], ErrorTypes>> => {
+    getAll = async (page?: number, limit?: number): Promise<APIResponse<any, ErrorTypes>> => {
         try {
             const allCollectionsCached = `@api-book-club-cache::allCollections${page};${limit}`;
 
             if (dbCache.has(allCollectionsCached)) {
-                const cachedResponse: CollectionEntity[] = dbCache.get(allCollectionsCached);
+                const cachedResponse = dbCache.get(allCollectionsCached);
                 return response.success(cachedResponse);
             }
 
-            const collections = await collectionRepository.getAll(page, limit);
+            const collectionsWithBooks = await collectionRepository.getAll(page, limit);
 
-            if (collections.length === 0 || !collections) {
+            if (collectionsWithBooks.length === 0 || !collectionsWithBooks) {
                 return response.unsuccessfully('Nenhuma coleção encontrado', HttpStatus.NOT_FOUND);
             }
+            
+            const collections = collectionsWithBooks.map(collection => {
+                return {
+                    ...collection.collection,
+                    books: []
+                };
+            }).filter((collection, index, self) => {
+                return index === self.findIndex(c => c.id === collection.id);
+            });
+
+            collectionsWithBooks.forEach(collWithBooks => {
+                collections.find(coll => coll.id === collWithBooks.collection.id).books.push(collWithBooks.book);
+            });
 
             dbCache.set(allCollectionsCached, collections, CACHE_LIMIT);
 
@@ -54,19 +67,32 @@ export class CollectionService {
         }
     };
 
-    getAllByOwnerId = async (owner_id: number): Promise<APIResponse<CollectionEntity[] | null, ErrorTypes>> => {
+    getAllByOwnerId = async (owner_id: number): Promise<APIResponse<any | null, ErrorTypes>> => {
         try {
             if (!owner_id) {
                 return response.unsuccessfully('O id é obrigatório');
             }
 
-            const collection = await collectionRepository.getAllByOwnerId(owner_id);
+            const collectionsWithBooks = await collectionRepository.getAllByOwnerId(owner_id);
 
-            if (!collection) {
+            if (!collectionsWithBooks) {
                 return response.unsuccessfully(`Coleção do usuário de id ${owner_id} não encontrado`, HttpStatus.NOT_FOUND);
             }
 
-            return response.success(collection);
+            const collections = collectionsWithBooks.map(collection => {
+                return {
+                    ...collection.collection,
+                    books: []
+                };
+            }).filter((collection, index, self) => {
+                return index === self.findIndex(c => c.id === collection.id);
+            });
+
+            collectionsWithBooks.forEach(collWithBooks => {
+                collections.find(coll => coll.id === collWithBooks.collection.id).books.push(collWithBooks.book);
+            });
+
+            return response.success(collections);
         } catch (error) {
             return response.error(error);
         }
@@ -78,15 +104,23 @@ export class CollectionService {
                 return response.unsuccessfully('O título, a descrição e o id são obrigatório');
             }
 
+            const checkCollectionExist = await collectionRepository.getByTitle(title);
+
+            if (checkCollectionExist) {
+                return response.unsuccessfully('Ja existe uma coleção com esse título');
+            }
+
             const collection = await collectionRepository.create({ title, description, owner_id });
 
             if (!collection) {
                 return response.unsuccessfully('Erro ao criar a coleção');
             }
 
+            const getId = await collectionRepository.getByTitle(title);
+
             if (booksId) {
                 booksId.forEach(async (bookId) => {
-                    await collectionRepository.addBookToCollection(collection.id, bookId);
+                    await collectionRepository.addBookToCollection(getId.id, bookId);
                 });
 
                 return response.success('Coleção com livros criada com sucesso', HttpStatus.CREATED);
