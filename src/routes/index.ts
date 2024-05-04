@@ -18,7 +18,7 @@ const middleware = new Middleware();
 router.use('/auth', AuthRouter);
 router.use('/author', middleware.auth, AuthorRouter);
 router.use('/book', BookRouter);
-router.use('/collecion', CollectionRouter);
+router.use('/collection', CollectionRouter);
 router.use('/genre', middleware.auth, GenreRouter);
 router.use('/interaction', middleware.auth, InteractionRouter);
 router.use('/tag', middleware.auth, TagRouter);
