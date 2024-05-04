@@ -4,9 +4,11 @@ import { UserBookRateEntity } from '../entities/user_book_rate';
 import { UserBookRateRepository } from '../repositories/user_book_rate';
 import { CreateUserBookRateDTO, UpdateUserBookRateDTO } from '../types/dto';
 import { HttpStatus } from '../types/http_status_type';
+import { BookRepository } from '../repositories/book';
 
 const response = new ResponseOn();
 const userBookRateRepository = new UserBookRateRepository();
+const bookRepository = new BookRepository();
 
 const CACHE_LIMIT = Number(process.env.CACHE_LIMIT) || 3600; 
 const dbCache = new NodeCache({ stdTTL: CACHE_LIMIT, checkperiod: 0.2 });
@@ -99,6 +101,12 @@ export class UserBookRateService {
 
             if (!user_id || !book_id) {
                 return response.unsuccessfully('O id do usuário e do Livro são obrigatórios');
+            }
+
+            const bookExist = await bookRepository.getById(book_id);
+
+            if (!bookExist) {
+                return response.unsuccessfully('Livro não foi encontrado', HttpStatus.NOT_FOUND);
             }
 
             const checkRateExist = await userBookRateRepository.getByUserIdAndBookId(user_id, book_id);
