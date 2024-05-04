@@ -4,6 +4,7 @@ import { AuthorRepository } from '../repositories/author';
 import { BookRepository } from '../repositories/book';
 import { GenreRepository } from '../repositories/genre';
 import { InteractionRepository } from '../repositories/interaction';
+import { UserBookRateRepository } from '../repositories/user_book_rate';
 import { CreateBookDTO, UpdateBookDTO } from '../types/dto';
 import { HttpStatus } from '../types/http_status_type';
 import NodeCache from 'node-cache';
@@ -13,12 +14,15 @@ const bookRepository = new BookRepository();
 const genreRepository = new GenreRepository();
 const authorRepository = new AuthorRepository();
 const interactionRepository = new InteractionRepository();
+const userBookRateRepository = new UserBookRateRepository();
 
 const CACHE_LIMIT = Number(process.env.CACHE_LIMIT) || 3600; 
 const dbCache = new NodeCache({ stdTTL: CACHE_LIMIT, checkperiod: 0.2 });
 
-function formatBookInfo(books: BookEntity[]) {
-    return books.map((book) => {
+async function formatBookInfo(books: BookEntity[]) {
+    const formatedBooks = books.map(async (book) => {
+        const rates = (await userBookRateRepository.getAllByBookId(book.id)).length;
+
         return {
             id: book.id,
             title: book.title,
@@ -26,8 +30,10 @@ function formatBookInfo(books: BookEntity[]) {
             imageUrl: book.url_image,
             genre: book.genre,
             author: book.author,
+            rate: rates,
         };
     });
+    return await Promise.all(formatedBooks);
 }
 
 export class BookService {
@@ -46,7 +52,7 @@ export class BookService {
                 return response.unsuccessfully('Nenhum livro encontrado', HttpStatus.NOT_FOUND);
             }
 
-            const filterBooks = formatBookInfo(books);
+            const filterBooks = await formatBookInfo(books);
 
             dbCache.set(allBooksCached, filterBooks, CACHE_LIMIT);
 
@@ -241,9 +247,9 @@ export class BookService {
             
             const mostLikedBooksFiltered = orderedBooks.slice(0, 5);
             
-            const booksFormateds = mostLikedBooksFiltered.map((bookInteraction) => {
-                return formatBookInfo([bookInteraction]);
-            });
+            const booksFormateds = await Promise.all(mostLikedBooksFiltered.map(async (bookInteraction) => {
+                return await formatBookInfo([bookInteraction]);
+            }));
 
             const finalResponse = booksFormateds.flatMap((book) =>  book);
 
