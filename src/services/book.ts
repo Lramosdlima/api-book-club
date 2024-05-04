@@ -215,24 +215,37 @@ export class BookService {
                 return response.unsuccessfully('Nenhum livro com gostei encontrado', HttpStatus.NOT_FOUND);
             }
 
-            const countLikes = booksLiked.reduce((acc, interaction) => {
-                acc[interaction.book.id] = (acc[interaction.book.id] || 0) + 1;
-                return acc;
+            const booksWithLikes = booksLiked.map((interaction) => {
+                return {
+                    ...interaction.book,
+                    liked: interaction.liked
+                };
             });
-    
-            const mostLikedBooks = booksLiked.filter((interaction) => countLikes[interaction.book.id] > 0);
+            
+            const uniqueBooks = booksLiked.map((book) => {
+                return { ...book.book };
+            }).filter((book, index, self) => {
+                return index === self.findIndex((t) => t.id === book.id);
+            });
 
-            const orderedBooks = mostLikedBooks.sort((a, b) => countLikes[b.book.id] - countLikes[a.book.id]);
+            const countedBooks = uniqueBooks.map((book) => {
+                return {
+                    ...book,
+                    liked: booksWithLikes.filter((likedBook) => likedBook.id === book.id).length
+                };
+            });
+
+            const orderedBooks = countedBooks.sort((a, b) => {
+                return b.liked - a.liked;
+            });
             
             const mostLikedBooksFiltered = orderedBooks.slice(0, 5);
             
             const booksFormateds = mostLikedBooksFiltered.map((bookInteraction) => {
-                return formatBookInfo([bookInteraction.book]);
+                return formatBookInfo([bookInteraction]);
             });
 
-            const finalResponse = booksFormateds.flatMap((book) => {
-                return book;
-            });
+            const finalResponse = booksFormateds.flatMap((book) =>  book);
 
             dbCache.set(mostLikedCached, finalResponse, CACHE_LIMIT);
 
