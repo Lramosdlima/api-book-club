@@ -43,6 +43,7 @@ export class AuthService {
                     id: user.id,
                     name: user.name,
                     email: user.email,
+                    profilePicture: user.profile_picture,
                 },
                 accessToken,
             };
