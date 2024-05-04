@@ -2,7 +2,6 @@ import NodeCache from 'node-cache';
 
 import { APIResponse, ErrorTypes, ResponseOn } from '../config/utils/response';
 import { CollectionEntity } from '../entities/collection';
-import { CollectionBookEntity } from '../entities/collection_book';
 import { CollectionRepository } from '../repositories/collection';
 import { HttpStatus } from '../types/http_status_type';
 
@@ -28,7 +27,6 @@ export class CollectionService {
                 return response.unsuccessfully('Nenhuma coleção encontrado', HttpStatus.NOT_FOUND);
             }
             
-
             const collections = collectionsWithBooks.map(collection => {
                 return {
                     ...collection.collection,
@@ -69,19 +67,32 @@ export class CollectionService {
         }
     };
 
-    getAllByOwnerId = async (owner_id: number): Promise<APIResponse<CollectionBookEntity[] | null, ErrorTypes>> => {
+    getAllByOwnerId = async (owner_id: number): Promise<APIResponse<any | null, ErrorTypes>> => {
         try {
             if (!owner_id) {
                 return response.unsuccessfully('O id é obrigatório');
             }
 
-            const collection = await collectionRepository.getAllByOwnerId(owner_id);
+            const collectionsWithBooks = await collectionRepository.getAllByOwnerId(owner_id);
 
-            if (!collection) {
+            if (!collectionsWithBooks) {
                 return response.unsuccessfully(`Coleção do usuário de id ${owner_id} não encontrado`, HttpStatus.NOT_FOUND);
             }
 
-            return response.success(collection);
+            const collections = collectionsWithBooks.map(collection => {
+                return {
+                    ...collection.collection,
+                    books: []
+                };
+            }).filter((collection, index, self) => {
+                return index === self.findIndex(c => c.id === collection.id);
+            });
+
+            collectionsWithBooks.forEach(collWithBooks => {
+                collections.find(coll => coll.id === collWithBooks.collection.id).books.push(collWithBooks.book);
+            });
+
+            return response.success(collections);
         } catch (error) {
             return response.error(error);
         }
