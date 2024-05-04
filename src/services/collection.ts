@@ -27,9 +27,10 @@ export class CollectionService {
                 return response.unsuccessfully('Nenhuma coleção encontrado', HttpStatus.NOT_FOUND);
             }
             
-            const collections = collectionsWithBooks.map(collection => {
+            const collections = collectionsWithBooks.map(collectionBook => {
                 return {
-                    ...collection.collection,
+                    ...collectionBook.collection,
+                    owner: collectionBook.collection.owner.name,
                     books: []
                 };
             }).filter((collection, index, self) => {
@@ -79,9 +80,10 @@ export class CollectionService {
                 return response.unsuccessfully(`Coleção do usuário de id ${owner_id} não encontrado`, HttpStatus.NOT_FOUND);
             }
 
-            const collections = collectionsWithBooks.map(collection => {
+            const collections = collectionsWithBooks.map(collectionBook => {
                 return {
-                    ...collection.collection,
+                    ...collectionBook.collection,
+                    owner: collectionBook.collection.owner.name,
                     books: []
                 };
             }).filter((collection, index, self) => {
