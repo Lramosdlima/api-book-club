@@ -24,6 +24,10 @@ export class CollectionRepository {
         return await collectionRepository.findOneBy({ id });
     };
 
+    getByTitle = async (title: string): Promise<CollectionEntity | null> => {
+        return await collectionRepository.findOneBy({ title });
+    };
+
     getAllByOwnerId = async (owner_id: number): Promise<CollectionBookEntity[]> => {
         return await collectionBookRepository.find({ 
             where: {

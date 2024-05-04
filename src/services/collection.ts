@@ -104,15 +104,23 @@ export class CollectionService {
                 return response.unsuccessfully('O título, a descrição e o id são obrigatório');
             }
 
+            const checkCollectionExist = await collectionRepository.getByTitle(title);
+
+            if (checkCollectionExist) {
+                return response.unsuccessfully('Ja existe uma coleção com esse título');
+            }
+
             const collection = await collectionRepository.create({ title, description, owner_id });
 
             if (!collection) {
                 return response.unsuccessfully('Erro ao criar a coleção');
             }
 
+            const getId = await collectionRepository.getByTitle(title);
+
             if (booksId) {
                 booksId.forEach(async (bookId) => {
-                    await collectionRepository.addBookToCollection(collection.id, bookId);
+                    await collectionRepository.addBookToCollection(getId.id, bookId);
                 });
 
                 return response.success('Coleção com livros criada com sucesso', HttpStatus.CREATED);
