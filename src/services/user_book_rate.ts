@@ -49,7 +49,7 @@ export class UserBookRateService {
 
     getAllByBookId = async (book_id: number): Promise<APIResponse<UserBookRateEntity[] | null, ErrorTypes>> => {
         try {
-            const allRateCached = `@api-book-club-cache::allCollections${book_id}`;
+            const allRateCached = `@api-book-club-cache::allRatesByBook${book_id}`;
 
             if (dbCache.has(allRateCached)) {
                 const cachedResponse: UserBookRateEntity[] = dbCache.get(allRateCached);
