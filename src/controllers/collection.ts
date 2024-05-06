@@ -61,8 +61,8 @@ export class CollectionController {
 
     async removeCollectionFromUser(req, res) {
         const { id } = req.params;
-        const { userId } = req.body;
-        const { codehttp, ...rest } = await collectionService.removeCollectionFromUser(id, userId);
+        const { user_id } = req.body;
+        const { codehttp, ...rest } = await collectionService.removeCollectionFromUser(id, user_id);
         return res.status(codehttp).json(rest);
     }
 }
