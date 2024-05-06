@@ -20,6 +20,6 @@ router.patch('/update/:id', middleware.auth, collectionController.update); // At
 router.put('/add/book/:id', middleware.auth, collectionController.addBookToCollection); // Adiciona um ou mais livros a uma coleção
 
 router.delete('/delete/:id', middleware.auth, collectionController.exclude); // Deleta uma coleção
-router.delete('/user/remove', middleware.auth, collectionController.removeCollectionFromUser); // Remove uma coleção de um usuário
+router.delete('/user/remove/:id', middleware.auth, collectionController.removeCollectionFromUser); // Remove uma coleção de um usuário
 
 export default router;
