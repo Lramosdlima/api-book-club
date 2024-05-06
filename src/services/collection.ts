@@ -243,19 +243,23 @@ export class CollectionService {
         }
     };
 
-    removeCollectionFromUser = async (id: number): Promise<APIResponse<string, ErrorTypes>> => {
+    removeCollectionFromUser = async (id: number, bookId: number): Promise<APIResponse<string, ErrorTypes>> => {
         try {
             if (!id) {
-                return response.unsuccessfully('O id é obrigatório');
+                return response.unsuccessfully('O id da coleção é obrigatório');
             }
 
-            const checkCollectionExist = await collectionRepository.getById(id);
+            if (!bookId) {
+                return response.unsuccessfully('O id do livro é obrigatório');
+            }
 
-            if (!checkCollectionExist) {
+            const checkCollectionAddedExist = await collectionRepository.getCollecionAddedByUserId(id, bookId);
+
+            if (!checkCollectionAddedExist) {
                 return response.unsuccessfully(`Coleção de id ${id} não encontrada`, HttpStatus.NOT_FOUND);
             }
 
-            await collectionRepository.removeCollectionFromUser(id);
+            await collectionRepository.removeCollectionFromUser(id, bookId);
 
             return response.success('Coleção foi removida do usuário com sucesso');
         } catch (error) {

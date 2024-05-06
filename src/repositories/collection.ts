@@ -44,6 +44,10 @@ export class CollectionRepository {
         });
     };
 
+    getCollecionAddedByUserId = async (user_id: number, collection_id: number): Promise<CollectionUserAddEntity | null> => {
+        return await collectionUserAddRepository.findOneBy({ user_id, collection_id });
+    };
+
     getAllAddedByUserId = async (user_id: number): Promise<CollectionUserAddEntity[]> => {
         return await collectionUserAddRepository.find({
             where: { user_id },
@@ -71,7 +75,7 @@ export class CollectionRepository {
         await collectionRepository.softDelete({ id });
     };
 
-    removeCollectionFromUser = async (id: number): Promise<void> => {
-        await collectionUserAddRepository.softDelete({ id });
+    removeCollectionFromUser = async (collection_id: number, user_id: number): Promise<void> => {
+        await collectionUserAddRepository.softDelete({ collection_id, user_id });
     };
 }
