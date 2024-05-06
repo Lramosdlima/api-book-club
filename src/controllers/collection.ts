@@ -48,8 +48,8 @@ export class CollectionController {
 
     async addBookToCollection(req, res) {
         const { id } = req.params;
-        const { bookId } = req.body;
-        const { codehttp, ...rest } = await collectionService.addBookToCollection(id, bookId);
+        const { book_id } = req.body;
+        const { codehttp, ...rest } = await collectionService.addBookToCollection(id, book_id);
         return res.status(codehttp).json(rest);
     }
 
