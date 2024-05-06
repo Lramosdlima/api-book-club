@@ -11,6 +11,7 @@ const middleware = new Middleware();
 router.get('/all', collectionController.getAll); // Todas coleções da comunidade
 router.get('/:id', collectionController.getById); // Uma coleção específica
 router.get('/user/:owner_id', middleware.auth, collectionController.getAllByOwnerId); // Coleções que o usuário criou
+router.get('/added/:user_id', middleware.auth, collectionController.getAllAddedByUserId); // Coleções que o usuário adicionou
 
 router.post('/create', middleware.auth, collectionController.create); // Cria uma nova coleção
 router.post('/user/add', middleware.auth, collectionController.addCollectionToUser); // Adiciona uma coleção a um usuário

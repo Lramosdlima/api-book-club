@@ -21,6 +21,12 @@ export class CollectionController {
         return res.status(codehttp).json(rest);
     }
 
+    async getAllAddedByUserId(req, res) {
+        const { user_id } = req.params;
+        const { codehttp, ...rest } = await collectionService.getAllAddedByUserId(user_id);
+        return res.status(codehttp).json(rest);
+    }
+
     async create(req, res) {
         const { title, description, owner_id, books } = req.body;
         const { codehttp, ...rest } = await collectionService.create(title, description, owner_id, books);
