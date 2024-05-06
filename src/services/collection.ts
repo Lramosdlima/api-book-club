@@ -4,6 +4,7 @@ import { APIResponse, ErrorTypes, ResponseOn } from '../config/utils/response';
 import { CollectionEntity } from '../entities/collection';
 import { CollectionRepository } from '../repositories/collection';
 import { HttpStatus } from '../types/http_status_type';
+import { CollectionResponse } from '../types/interface';
 
 const response = new ResponseOn();
 const collectionRepository = new CollectionRepository();
@@ -68,7 +69,7 @@ export class CollectionService {
         }
     };
 
-    getAllByOwnerId = async (owner_id: number): Promise<APIResponse<any | null, ErrorTypes>> => {
+    getAllByOwnerId = async (owner_id: number): Promise<APIResponse<CollectionResponse | null, ErrorTypes>> => {
         try {
             if (!owner_id) {
                 return response.unsuccessfully('O id é obrigatório');
@@ -80,7 +81,7 @@ export class CollectionService {
                 return response.unsuccessfully(`Coleção do usuário de id ${owner_id} não encontrado`, HttpStatus.NOT_FOUND);
             }
 
-            const collections = collectionsWithBooks.map(collectionBook => {
+            const collections: CollectionResponse = collectionsWithBooks.map(collectionBook => {
                 return {
                     ...collectionBook.collection,
                     owner: collectionBook.collection.owner.name,
@@ -95,6 +96,35 @@ export class CollectionService {
             });
 
             return response.success(collections);
+        } catch (error) {
+            return response.error(error);
+        }
+    };
+
+    getAllAddedByUserId = async (user_id: number): Promise<APIResponse<CollectionResponse | null, ErrorTypes>> => {
+        try {
+            if (!user_id) {
+                return response.unsuccessfully('O id é obrigatório');
+            }
+
+            const userCollectionsAdded = await collectionRepository.getAllAddedByUserId(user_id);
+
+            if (!userCollectionsAdded) {
+                return response.unsuccessfully(`Coleção do usuário de id ${user_id} não encontrado`, HttpStatus.NOT_FOUND);
+            }
+
+            const collections = await Promise.all(userCollectionsAdded.map( async collectionAdded => {
+                const collectionBooks = await collectionRepository.getCollectionBookById(collectionAdded.collection_id);
+
+                return {
+                    ...collectionAdded.collection,
+                    owner: collectionAdded.collection.owner.name,
+                    books: collectionBooks ? collectionBooks.map(book => book.book) : []
+                };
+            }));
+
+            return response.success(collections);
+
         } catch (error) {
             return response.error(error);
         }
@@ -140,7 +170,7 @@ export class CollectionService {
                 return response.unsuccessfully('O id do usuário e da coleção são obrigatórios');
             }
 
-            await collectionRepository.addCollectionToUser(user_id, collection_id);
+            await collectionRepository.addCollectionToUser(collection_id, user_id);
 
             return response.success('Coleção foi adicionada ao usuário com sucesso', HttpStatus.CREATED);
         } catch (error) {
@@ -213,19 +243,23 @@ export class CollectionService {
         }
     };
 
-    removeCollectionFromUser = async (id: number): Promise<APIResponse<string, ErrorTypes>> => {
+    removeCollectionFromUser = async (collectionId: number, userId: number): Promise<APIResponse<string, ErrorTypes>> => {
         try {
-            if (!id) {
-                return response.unsuccessfully('O id é obrigatório');
+            if (!collectionId) {
+                return response.unsuccessfully('O id da coleção é obrigatório');
+            }
+            
+            if (!userId) {
+                return response.unsuccessfully('O id do usuário é obrigatório');
             }
 
-            const checkCollectionExist = await collectionRepository.getById(id);
+            const checkCollectionAddedExist = await collectionRepository.getCollecionAddedByUserId(collectionId, userId);
 
-            if (!checkCollectionExist) {
-                return response.unsuccessfully(`Coleção de id ${id} não encontrada`, HttpStatus.NOT_FOUND);
+            if (!checkCollectionAddedExist) {
+                return response.unsuccessfully('Nenhuma coleção foi adicionada ao usuário', HttpStatus.NOT_FOUND);
             }
 
-            await collectionRepository.removeCollectionFromUser(id);
+            await collectionRepository.removeCollectionFromUser(collectionId, userId);
 
             return response.success('Coleção foi removida do usuário com sucesso');
         } catch (error) {

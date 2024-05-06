@@ -21,6 +21,12 @@ export class CollectionController {
         return res.status(codehttp).json(rest);
     }
 
+    async getAllAddedByUserId(req, res) {
+        const { user_id } = req.params;
+        const { codehttp, ...rest } = await collectionService.getAllAddedByUserId(user_id);
+        return res.status(codehttp).json(rest);
+    }
+
     async create(req, res) {
         const { title, description, owner_id, books } = req.body;
         const { codehttp, ...rest } = await collectionService.create(title, description, owner_id, books);
@@ -42,8 +48,8 @@ export class CollectionController {
 
     async addBookToCollection(req, res) {
         const { id } = req.params;
-        const { bookId } = req.body;
-        const { codehttp, ...rest } = await collectionService.addBookToCollection(id, bookId);
+        const { book_id } = req.body;
+        const { codehttp, ...rest } = await collectionService.addBookToCollection(id, book_id);
         return res.status(codehttp).json(rest);
     }
 
@@ -55,7 +61,8 @@ export class CollectionController {
 
     async removeCollectionFromUser(req, res) {
         const { id } = req.params;
-        const { codehttp, ...rest } = await collectionService.removeCollectionFromUser(id);
+        const { user_id } = req.body;
+        const { codehttp, ...rest } = await collectionService.removeCollectionFromUser(id, user_id);
         return res.status(codehttp).json(rest);
     }
 }

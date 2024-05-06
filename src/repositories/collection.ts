@@ -24,16 +24,34 @@ export class CollectionRepository {
         return await collectionRepository.findOneBy({ id });
     };
 
+    getCollectionBookById = async (id: number): Promise<CollectionBookEntity[] | null> => {
+        return await collectionBookRepository.find({
+            where: { collection_id: id },
+            relations: ['collection', 'collection.owner', 'book', 'book.author', 'book.genre']
+        });
+    };
+
     getByTitle = async (title: string): Promise<CollectionEntity | null> => {
         return await collectionRepository.findOneBy({ title });
     };
 
     getAllByOwnerId = async (owner_id: number): Promise<CollectionBookEntity[]> => {
-        return await collectionBookRepository.find({ 
+        return await collectionBookRepository.find({
             where: {
                 collection: { owner_id },
             },
-            relations: ['collection', 'book']
+            relations: ['collection', 'collection.owner', 'book', 'book.author', 'book.genre'],
+        });
+    };
+
+    getCollecionAddedByUserId = async (collection_id: number, user_id: number): Promise<CollectionUserAddEntity | null> => {
+        return await collectionUserAddRepository.findOneBy({ collection_id, user_id });
+    };
+
+    getAllAddedByUserId = async (user_id: number): Promise<CollectionUserAddEntity[]> => {
+        return await collectionUserAddRepository.find({
+            where: { user_id },
+            relations: ['collection', 'collection.owner'],
         });
     };
 
@@ -57,7 +75,7 @@ export class CollectionRepository {
         await collectionRepository.softDelete({ id });
     };
 
-    removeCollectionFromUser = async (id: number): Promise<void> => {
-        await collectionUserAddRepository.softDelete({ id });
+    removeCollectionFromUser = async (collection_id: number, user_id: number): Promise<void> => {
+        await collectionUserAddRepository.softDelete({ collection_id, user_id });
     };
 }
