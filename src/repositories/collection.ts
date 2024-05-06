@@ -44,8 +44,8 @@ export class CollectionRepository {
         });
     };
 
-    getCollecionAddedByUserId = async (user_id: number, collection_id: number): Promise<CollectionUserAddEntity | null> => {
-        return await collectionUserAddRepository.findOneBy({ user_id, collection_id });
+    getCollecionAddedByUserId = async (collection_id: number, user_id: number): Promise<CollectionUserAddEntity | null> => {
+        return await collectionUserAddRepository.findOneBy({ collection_id, user_id });
     };
 
     getAllAddedByUserId = async (user_id: number): Promise<CollectionUserAddEntity[]> => {
