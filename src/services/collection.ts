@@ -5,9 +5,11 @@ import { CollectionEntity } from '../entities/collection';
 import { CollectionRepository } from '../repositories/collection';
 import { HttpStatus } from '../types/http_status_type';
 import { CollectionResponse } from '../types/interface';
+import { BookRepository } from '../repositories/book';
 
 const response = new ResponseOn();
 const collectionRepository = new CollectionRepository();
+const bookRepository = new BookRepository();
 
 const CACHE_LIMIT = Number(process.env.CACHE_LIMIT) || 3600; 
 const dbCache = new NodeCache({ stdTTL: CACHE_LIMIT, checkperiod: 0.2 });
@@ -170,6 +172,12 @@ export class CollectionService {
                 return response.unsuccessfully('O id do usuário e da coleção são obrigatórios');
             }
 
+            const checkCollectionExist = await collectionRepository.getCollecionAddedByUserId(collection_id, user_id);
+
+            if (checkCollectionExist) {
+                return response.unsuccessfully('Já existe uma coleção adicionada para este usuário');
+            }   
+
             await collectionRepository.addCollectionToUser(collection_id, user_id);
 
             return response.success('Coleção foi adicionada ao usuário com sucesso', HttpStatus.CREATED);
@@ -212,6 +220,12 @@ export class CollectionService {
 
             if (!checkCollectionExist) {
                 return response.unsuccessfully(`Coleção de id ${id} não encontrada`, HttpStatus.NOT_FOUND);
+            }
+
+            const checkBookExist = await bookRepository.getById(bookId);
+
+            if (!checkBookExist) {
+                return response.unsuccessfully(`Livro de id ${bookId} não encontrado`, HttpStatus.NOT_FOUND);
             }
 
             await collectionRepository.addBookToCollection(id, bookId);
