@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { UserRepository } from '../../repositories/user';
 import { IUserToken } from '../../types/interface';
+import { HttpStatus } from '../../types/http_status_type';
 
 const userRepository = new UserRepository();
 
@@ -30,7 +31,7 @@ export class Middleware {
             return next();
         } catch (error) {
             console.log(error);
-            return res.status(401).json({ status: false, data: null, error: 'Faça login para utilizar essa funcionalidade' });
+            return res.status(HttpStatus.UNAUTHORIZED).json({ status: false, data: null, error: error || 'Faça login para utilizar essa funcionalidade' });
         }
     }
 }
