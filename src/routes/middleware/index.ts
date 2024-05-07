@@ -29,7 +29,8 @@ export class Middleware {
 
             return next();
         } catch (error) {
-            return res.status(401).json({ status: false, data: null, error: error.message });
+            console.log(error);
+            return res.status(401).json({ status: false, data: null, error: 'Faça login para utilizar essa funcionalidade' });
         }
     }
 }

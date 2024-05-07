@@ -175,7 +175,7 @@ export class CollectionService {
             const checkCollectionExist = await collectionRepository.getCollecionAddedByUserId(collection_id, user_id);
 
             if (checkCollectionExist) {
-                return response.unsuccessfully('Já existe uma coleção adicionada para este usuário');
+                return response.unsuccessfully('Essa coleção já foi adicionada');
             }   
 
             await collectionRepository.addCollectionToUser(collection_id, user_id);
