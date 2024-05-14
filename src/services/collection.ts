@@ -166,19 +166,23 @@ export class CollectionService {
         }
     };
 
-    addCollectionToUser = async (user_id: number, collection_id: number): Promise<APIResponse<string, ErrorTypes>> => {
+    addCollectionToUser = async (userId: number, collectionId: number): Promise<APIResponse<string, ErrorTypes>> => {
         try {
-            if (!user_id || !collection_id) {
-                return response.unsuccessfully('O id do usuário e da coleção são obrigatórios');
+            if (!collectionId) {
+                return response.unsuccessfully('O id da coleção é obrigatório');
+            }
+            
+            if (!userId) {
+                return response.unsuccessfully('O id do usuário é obrigatório');
             }
 
-            const checkCollectionExist = await collectionRepository.getCollecionAddedByUserId(collection_id, user_id);
+            const checkCollectionExist = await collectionRepository.getCollecionAddedByUserId(collectionId, userId);
 
             if (checkCollectionExist) {
                 return response.unsuccessfully('Essa coleção já foi adicionada');
             }   
 
-            await collectionRepository.addCollectionToUser(collection_id, user_id);
+            await collectionRepository.addCollectionToUser(collectionId, userId);
 
             return response.success('Coleção foi adicionada ao usuário com sucesso', HttpStatus.CREATED);
         } catch (error) {
@@ -270,7 +274,7 @@ export class CollectionService {
             const checkCollectionAddedExist = await collectionRepository.getCollecionAddedByUserId(collectionId, userId);
 
             if (!checkCollectionAddedExist) {
-                return response.unsuccessfully('Nenhuma coleção foi adicionada ao usuário', HttpStatus.NOT_FOUND);
+                return response.unsuccessfully('Essa coleção não foi adicionada ou já foi removida', HttpStatus.NOT_FOUND);
             }
 
             await collectionRepository.removeCollectionFromUser(collectionId, userId);
