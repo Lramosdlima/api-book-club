@@ -23,6 +23,6 @@ router.use('/genre', middleware.auth, GenreRouter);
 router.use('/interaction', middleware.auth, InteractionRouter);
 router.use('/tag', middleware.auth, TagRouter);
 router.use('/user', middleware.auth, UserRouter);
-router.use('/rate', middleware.auth, RateRouter);
+router.use('/rate', RateRouter);
 
 export default router;
