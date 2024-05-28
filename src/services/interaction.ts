@@ -61,10 +61,14 @@ export class InteractionService {
         }
     };
 
-    getEspecificInteractionsByUserId = async (user_id: number, already_read: boolean, want_to_read: boolean, liked: boolean): Promise<APIResponse<InteractionEntity[] | null, ErrorTypes>> => {
+    getEspecificInteractionsByUserId = async (user_id: number, book_id: number): Promise<APIResponse<InteractionEntity | null, ErrorTypes>> => {
         try {
             if (!user_id) {
                 return response.unsuccessfully('O id do usuário é obrigatório');
+            }
+
+            if (!book_id) {
+                return response.unsuccessfully('O id do livro é obrigatório');
             }
 
             const checkUserExist = await userRepository.getById(user_id);
@@ -73,7 +77,13 @@ export class InteractionService {
                 return response.unsuccessfully('Usuário não foi encontrado', HttpStatus.NOT_FOUND);
             }
 
-            const interaction = await interactionRepository.getEspecificByUserId(user_id, already_read, want_to_read, liked);
+            const checkBookExist = await bookRepository.getById(book_id);
+
+            if (!checkBookExist) {
+                return response.unsuccessfully('O livro não foi encontrado', HttpStatus.NOT_FOUND);
+            }
+
+            const interaction = await interactionRepository.getEspecificByUserId(user_id, book_id);
 
             if (!interaction) {
                 return response.unsuccessfully(`Interação no livro desse usuário ${user_id} não foi encontrada`, HttpStatus.NOT_FOUND);
