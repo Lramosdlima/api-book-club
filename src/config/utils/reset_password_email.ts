@@ -1,7 +1,7 @@
 import { sendEmail } from './mail_service';
 
 export const resetPasswordEmail = (email: string, token: string) => {
-    const title = 'Recuperar senha';
+    const title = 'BookClub - Recuperar senha';
     const link = `${process.env.API_URL}/reset-password?token=${token}`;
 
     const content = `<!doctype html>
