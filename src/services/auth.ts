@@ -3,8 +3,9 @@ import jwt from 'jsonwebtoken';
 
 import { APIResponse, ErrorTypes, ResponseOn } from '../config/utils/response';
 import { UserRepository } from '../repositories/user';
-import { ILoginResponse, IUserToken, RoleEnum } from '../types/interface';
+import { ILoginResponse, IResetPasswordToken, RoleEnum } from '../types/interface';
 import { HttpStatus } from '../types/http_status_type';
+import { resetPasswordEmail } from '../config/utils/reset_password_email';
 
 const response = new ResponseOn();
 const userRepository = new UserRepository();
@@ -79,44 +80,16 @@ export class AuthService {
         }
     };
 
-    forgotPassword = async (email: string) => {
+    forgotPassword = async (email: string, password: string) => {
         try {
-            if (!email) {
-                return response.unsuccessfully('O email é obrigatório');
+            if (!email || !password) {
+                return response.unsuccessfully('O email e a senha são obrigatórios');
             }
 
             const user = await userRepository.getByEmail(email);
 
             if (!user) {
                 return response.unsuccessfully('Email inválido');
-            }
-
-            // TODO: Serviço de envio de email
-
-            // const enviarEmail = await sendEmail(email);
-
-            // if (!enviarEmail) {
-            //     return response.unsuccessfully('Não foi possível enviar o email', HttpStatus.INTERNAL_SERVER_ERROR);
-            // }
-
-            return response.success('Email enviado com sucesso');
-        } catch (error) {
-            return response.error(error);
-        }
-    };
-
-    resetPassword = async (token: string, password: string): Promise<APIResponse<string, ErrorTypes>> => {
-        try {
-            if (!token || !password) {
-                return response.unsuccessfully('O token e a senha são obrigatórios');
-            }
-    
-            const decoded = jwt.verify(token, process.env.JWT_SECRET) as IUserToken;
-
-            const  user = await userRepository.getById(decoded.user_id);
-
-            if (!user) {
-                return response.unsuccessfully('Token inválido');
             }
 
             const comparePassword = bcrypt.compareSync(password, user.password);
@@ -128,7 +101,39 @@ export class AuthService {
             const salt = bcrypt.genSaltSync(10);
             const hashedPassword = bcrypt.hashSync(password, salt);
 
-            await userRepository.updatePassword(user.id, hashedPassword);
+            const bodyToken: IResetPasswordToken = { user_id: user.id, password: hashedPassword };
+
+            const token = jwt.sign(
+                bodyToken,
+                process.env.JWT_SECRET,
+                { expiresIn: process.env.EXPIRES_PASSWORD_TOKEN || '30m' },
+            );
+
+            const enviarEmail = await resetPasswordEmail(email, token);
+
+            if (!enviarEmail.status) {
+                return response.unsuccessfully(enviarEmail.message, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            return response.success(enviarEmail.message);
+        } catch (error) {
+            return response.error(error);
+        }
+    };
+
+    resetPassword = async (token: string): Promise<APIResponse<string, ErrorTypes>> => {
+        try {
+            if (!token) {
+                return response.unsuccessfully('O token é obrigatório');
+            }
+    
+            const decoded = jwt.verify(token, process.env.JWT_SECRET) as IResetPasswordToken;
+
+            if (!decoded) {
+                return response.unsuccessfully('Token inválido');
+            }
+
+            await userRepository.updatePassword(decoded.user_id, decoded.password);
 
             return response.success('Senha alterada com sucesso');
 
