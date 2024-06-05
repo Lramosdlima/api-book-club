@@ -22,7 +22,7 @@ export class AuthController {
     }
 
     async resetPassword(req, res) {
-        const { token } = req.param;
+        const { token } = req.query;
         const { codehttp, ...rest } = await authService.resetPassword(token);
         return res.status(codehttp).json(rest);
     }
