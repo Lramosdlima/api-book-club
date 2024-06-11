@@ -96,6 +96,32 @@ export class InteractionService {
         }
     };
 
+    getBooksWithEspecificInteractionByUserId = async (user_id: number, { isLiked = false, isWantToRead = false, isAlreadyRead = false}
+    ): Promise<APIResponse<InteractionEntity[] | null, ErrorTypes>> => {
+        try {
+            if (!user_id) {
+                return response.unsuccessfully('O id do usuário é obrigatório');
+            }
+
+            const checkUserExist = await userRepository.getById(user_id);
+
+            if (!checkUserExist) {
+                return response.unsuccessfully('Usuário não foi encontrado', HttpStatus.NOT_FOUND);
+            }
+
+            const interaction = await interactionRepository.getBooksWithInteractionsByUserId(user_id, { isLiked, isWantToRead, isAlreadyRead });
+
+            if (!interaction) {
+                return response.unsuccessfully(`Interação no livro desse usuário ${user_id} não foi encontrada`, HttpStatus.NOT_FOUND);
+            }
+
+            return response.success(interaction);
+
+        } catch (error) {
+            return response.error(error);
+        }
+    };
+
     add = async (createInteractionDTO: CreateInteractionDTO): Promise<APIResponse<string, ErrorTypes>> => {
         try {
             const { user_id, book_id, already_read, want_to_read, liked } = createInteractionDTO;
