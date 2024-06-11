@@ -28,11 +28,26 @@ export class InteractionRepository {
         });
     };
 
-    getEspecificByUserId = async (user_id: number, book_id: number ): Promise<InteractionEntity> => {
+    getEspecificByUserId = async (user_id: number, book_id: number): Promise<InteractionEntity> => {
         return await interactionRepository.findOne({
             where: {
                 user_id,
                 book_id,
+            },
+            relations: ['book'],
+        });
+    };
+
+    getBooksWithInteractionsByUserId = async (
+        user_id: number, { isLiked = false, isWantToRead = false, isAlreadyRead = false}
+        : { isLiked?: boolean; isWantToRead?: boolean; isAlreadyRead?: boolean }
+    ): Promise<InteractionEntity[]> => {
+        return await interactionRepository.find({
+            where: {
+                user_id,
+                liked: isLiked,
+                want_to_read: isWantToRead,
+                already_read: isAlreadyRead,
             },
             relations: ['book'],
         });

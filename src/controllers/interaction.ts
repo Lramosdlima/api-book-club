@@ -23,6 +23,27 @@ export class InteractionController {
         return res.status(codehttp).json(rest);
     }
 
+    async getBookLikedByUserId(req, res) {
+        const { user_id } = req.params;
+        const { codehttp, ...rest } = await interactionService
+            .getBooksWithEspecificInteractionByUserId(user_id, { isLiked: true });
+        return res.status(codehttp).json(rest);
+    }
+
+    async getBookAlreadyReadByUserId(req, res) {
+        const { user_id } = req.params;
+        const { codehttp, ...rest } = await interactionService
+            .getBooksWithEspecificInteractionByUserId(user_id, { isAlreadyRead: true });
+        return res.status(codehttp).json(rest);
+    }
+
+    async getBookWantToReadByUserId(req, res) {
+        const { user_id } = req.params;
+        const { codehttp, ...rest } = await interactionService
+            .getBooksWithEspecificInteractionByUserId(user_id, { isWantToRead: true });
+        return res.status(codehttp).json(rest);
+    }
+
     async add(req, res) {
         const { user_id, book_id, already_read, want_to_read, liked } = req.body;
         const { codehttp, ...rest } = await interactionService.add({ user_id, book_id, already_read, want_to_read, liked });
