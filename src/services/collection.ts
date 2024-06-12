@@ -1,29 +1,19 @@
-import NodeCache from 'node-cache';
-
 import { APIResponse, ErrorTypes, ResponseOn } from '../config/utils/response';
 import { CollectionEntity } from '../entities/collection';
 import { CollectionRepository } from '../repositories/collection';
 import { HttpStatus } from '../types/http_status_type';
 import { CollectionResponse } from '../types/interface';
 import { BookRepository } from '../repositories/book';
+import { UserRepository } from '../repositories/user';
 
 const response = new ResponseOn();
 const collectionRepository = new CollectionRepository();
 const bookRepository = new BookRepository();
-
-const CACHE_LIMIT = Number(process.env.CACHE_LIMIT) || 3600; 
-const dbCache = new NodeCache({ stdTTL: CACHE_LIMIT, checkperiod: 0.2 });
+const userRepository = new UserRepository();
 
 export class CollectionService {
     getAll = async (page?: number, limit?: number): Promise<APIResponse<any, ErrorTypes>> => {
         try {
-            const allCollectionsCached = `@api-book-club-cache::allCollections${page};${limit}`;
-
-            if (dbCache.has(allCollectionsCached)) {
-                const cachedResponse = dbCache.get(allCollectionsCached);
-                return response.success(cachedResponse);
-            }
-
             const collectionsWithBooks = await collectionRepository.getAll(page, limit);
 
             if (collectionsWithBooks.length === 0 || !collectionsWithBooks) {
@@ -43,8 +33,6 @@ export class CollectionService {
             collectionsWithBooks.forEach(collWithBooks => {
                 collections.find(coll => coll.id === collWithBooks.collection.id).books.push(collWithBooks.book);
             });
-
-            dbCache.set(allCollectionsCached, collections, CACHE_LIMIT);
 
             return response.success(collections);
 
@@ -176,9 +164,21 @@ export class CollectionService {
                 return response.unsuccessfully('O id do usuário é obrigatório');
             }
 
-            const checkCollectionExist = await collectionRepository.getCollecionAddedByUserId(collectionId, userId);
+            const checkUserExist = await userRepository.getById(userId);
 
-            if (checkCollectionExist) {
+            if (!checkUserExist) {
+                return response.unsuccessfully(`Usuário de id ${userId} não encontrado`, HttpStatus.NOT_FOUND);
+            }
+
+            const checkCollectionExist = await collectionRepository.getById(collectionId);
+
+            if (!checkCollectionExist) {
+                return response.unsuccessfully(`Coleção de id ${collectionId} não encontrada`, HttpStatus.NOT_FOUND);
+            }
+
+            const checkCollectionAdded = await collectionRepository.getCollecionAddedByUserId(collectionId, userId);
+
+            if (checkCollectionAdded) {
                 return response.unsuccessfully('Essa coleção já foi adicionada');
             }   
 
