@@ -73,6 +73,8 @@ export class CollectionRepository {
 
     exclude = async (id: number): Promise<void> => {
         await collectionRepository.softDelete({ id });
+        await collectionBookRepository.softDelete({ collection_id: id });
+        await collectionUserAddRepository.softDelete({ collection_id: id });
     };
 
     removeCollectionFromUser = async (collection_id: number, user_id: number): Promise<void> => {
