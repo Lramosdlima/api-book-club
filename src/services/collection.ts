@@ -1,5 +1,3 @@
-import NodeCache from 'node-cache';
-
 import { APIResponse, ErrorTypes, ResponseOn } from '../config/utils/response';
 import { CollectionEntity } from '../entities/collection';
 import { CollectionRepository } from '../repositories/collection';
@@ -13,19 +11,9 @@ const collectionRepository = new CollectionRepository();
 const bookRepository = new BookRepository();
 const userRepository = new UserRepository();
 
-const CACHE_LIMIT = Number(process.env.CACHE_LIMIT) || 3600; 
-const dbCache = new NodeCache({ stdTTL: CACHE_LIMIT, checkperiod: 0.2 });
-
 export class CollectionService {
     getAll = async (page?: number, limit?: number): Promise<APIResponse<any, ErrorTypes>> => {
         try {
-            const allCollectionsCached = `@api-book-club-cache::allCollections${page};${limit}`;
-
-            if (dbCache.has(allCollectionsCached)) {
-                const cachedResponse = dbCache.get(allCollectionsCached);
-                return response.success(cachedResponse);
-            }
-
             const collectionsWithBooks = await collectionRepository.getAll(page, limit);
 
             if (collectionsWithBooks.length === 0 || !collectionsWithBooks) {
@@ -45,8 +33,6 @@ export class CollectionService {
             collectionsWithBooks.forEach(collWithBooks => {
                 collections.find(coll => coll.id === collWithBooks.collection.id).books.push(collWithBooks.book);
             });
-
-            dbCache.set(allCollectionsCached, collections, CACHE_LIMIT);
 
             return response.success(collections);
 
