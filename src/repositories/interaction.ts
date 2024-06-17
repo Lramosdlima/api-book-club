@@ -39,7 +39,7 @@ export class InteractionRepository {
     };
 
     getBooksWithInteractionsByUserId = async (
-        user_id: number, { isLiked = false, isWantToRead = false, isAlreadyRead = false}
+        user_id: number, { isLiked, isWantToRead, isAlreadyRead}
         : { isLiked?: boolean; isWantToRead?: boolean; isAlreadyRead?: boolean }
     ): Promise<InteractionEntity[]> => {
         return await interactionRepository.find({

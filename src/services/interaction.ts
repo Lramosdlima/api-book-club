@@ -96,7 +96,11 @@ export class InteractionService {
         }
     };
 
-    getBooksWithEspecificInteractionByUserId = async (user_id: number, { isLiked = false, isWantToRead = false, isAlreadyRead = false}
+    getBooksWithEspecificInteractionByUserId = async (user_id: number, { isLiked, isWantToRead, isAlreadyRead}: {
+        isLiked?: boolean,
+        isWantToRead?: boolean,
+        isAlreadyRead?: boolean
+    }
     ): Promise<APIResponse<InteractionEntity[] | null, ErrorTypes>> => {
         try {
             if (!user_id) {
