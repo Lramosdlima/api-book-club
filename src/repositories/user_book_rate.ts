@@ -28,7 +28,8 @@ export class UserBookRateRepository {
 
     getAllByUserId = async (user_id: number): Promise<UserBookRateEntity[]> => {
         return await userBookRateRepository.find({
-            where: { user_id }
+            where: { user_id },
+            relations: ['user']
         });
     };
 
