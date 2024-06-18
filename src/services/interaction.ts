@@ -197,4 +197,24 @@ export class InteractionService {
             return response.error(error);
         }
     };
+
+    remove = async (id: number): Promise<APIResponse<string, ErrorTypes>> => {
+        try {
+            if (!id) {
+                return response.unsuccessfully('O id é obrigatório');
+            }
+
+            const checkInteractionExist = await interactionRepository.getById(id);
+
+            if (!checkInteractionExist) {
+                return response.unsuccessfully(`Interação no livro ${id} do usuário não encontrada`, HttpStatus.NOT_FOUND);
+            }
+        
+            await interactionRepository.exclude(id);
+
+            return response.success(`Interação no livro ${id} do usuário foi excluída com sucesso`);
+        } catch (error) {
+            return response.error(error);
+        }
+    };
 }

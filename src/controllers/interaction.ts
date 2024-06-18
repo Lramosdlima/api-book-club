@@ -56,4 +56,10 @@ export class InteractionController {
         const { codehttp, ...rest } = await interactionService.update(id, { already_read, want_to_read, liked });
         return res.status(codehttp).json(rest);
     }
+
+    async exclude(req, res) {
+        const { id } = req.params;
+        const { codehttp, ...rest } = await interactionService.remove(id);
+        return res.status(codehttp).json(rest);
+    }
 }
