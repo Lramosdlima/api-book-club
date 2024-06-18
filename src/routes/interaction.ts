@@ -19,5 +19,7 @@ router.post('/add', interactionController.add);
 
 router.put('/update/:id', interactionController.update);
 
+router.delete('/remove/:id', interactionController.exclude);
+
 
 export default router;
