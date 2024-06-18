@@ -113,6 +113,24 @@ export class CollectionService {
                 };
             }));
 
+            const myCollections = await collectionRepository.getAllByOwnerId(user_id);
+
+            const ownerCollections = myCollections.map(collectionBook => {
+                return {
+                    ...collectionBook.collection,
+                    owner: collectionBook.collection.owner.name,
+                    books: []
+                };
+            }).filter((collection, index, self) => {
+                return index === self.findIndex(c => c.id === collection.id);
+            });
+
+            myCollections.forEach(collWithBooks => {
+                ownerCollections.find(coll => coll.id === collWithBooks.collection.id).books.push(collWithBooks.book);
+            });
+
+            collections.unshift(...ownerCollections);
+
             return response.success(collections);
 
         } catch (error) {
