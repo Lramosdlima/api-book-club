@@ -115,14 +115,6 @@ export class CollectionService {
 
             const myCollections = await collectionRepository.getAllByOwnerId(user_id);
 
-            myCollections.forEach(collWithBooks => {
-               collections.push({
-                   ...collWithBooks.collection,
-                   owner: collWithBooks.collection.owner.name,
-                   books: []
-               })
-            });
-
             const ownerCollections = myCollections.map(collectionBook => {
                 return {
                     ...collectionBook.collection,
