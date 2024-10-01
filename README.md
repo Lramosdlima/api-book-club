@@ -16,7 +16,7 @@ Essa API é um projeto de graduação no CEUB de Análise e Desenvolvimento de S
 
 # Sobre o BookClub 📚
 
-O projeto nasceu com a necessidade de unir pessoas que gostam de livros e seus universos, além de incentivar a leitura explorando, comentando e avaliando livros. Você favoritar livros e até mesmo criar uma coleção de livros, coleção essa que pode agrupa-los em alguma ideia como "Livros com melhores PLOTs!" ou "Livros perfeitos para fim de semana!".  
+O projeto nasceu com a necessidade de unir pessoas que gostam de livros e seus universos, além de incentivar a leitura explorando, comentando e avaliando livros. Você pode favoritar livros e até mesmo criar uma coleção de livros. Coleção essa que você pode agrupar livros com alguma ideia como "Livros com melhores PLOTs!" ou "Livros perfeitos para fim de semana!".
 
 ## 🛠 Conhecimentos Aplicados
 
