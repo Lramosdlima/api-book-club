@@ -14,6 +14,10 @@
 
 Essa API é um projeto de graduação no CEUB de Análise e Desenvolvimento de Sistemas para o Projeto Integrador. Ela foi desenvolvida com o intuito de praticar conhecimentos adquiridos no decorrer do curso. Essa API fornece os serviços para o [App Book Club](https://github.com/Lramosdlima/app-book-club).
 
+# Sobre o BookClub 📚
+
+O projeto nasceu com a necessidade de unir pessoas que gostam de livros e seus universos, além de incentivar a leitura explorando, comentando e avaliando livros. Você favoritar livros e até mesmo criar uma coleção de livros, coleção essa que pode agrupa-los em alguma ideia como "Livros com melhores PLOTs!" ou "Livros perfeitos para fim de semana!".  
+
 ## 🛠 Conhecimentos Aplicados
 
 - NODE JS + Express
